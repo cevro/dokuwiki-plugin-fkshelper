@@ -56,7 +56,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
     public static function extractParamtext($text) {
         foreach (preg_split('/;/', $text)as $key => $value) {
             list($k, $v) = preg_split('/=/', $value);
-            $k=str_replace(array("\n"," "), '', $k);
+            $k = str_replace(array("\n", " "), '', $k);
             $param[$k] = $v;
         }
         return $param;
@@ -155,4 +155,22 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
 </div>';
     }
 
+}
+
+/*
+ * extend Doku html.php
+ */
+
+function html_facebook_btn($name = 'Share on FaceBook', $class = 'btn-social btn-facebook', $param = array()) {
+    $r.= '<button  ' . buildAttributes($param) . ' class="' . $class . '">';
+    $r.= '<i class="fa fa-facebook"></i>';
+    $r.= $name . '</button>';
+    return $r;
+}
+
+function html_button($name = 'btn', $class = 'btn', $params = array()) {
+    $r.='<button ' . buildAttributes($params) . ' class="' . $class . '">';
+    $r.=$name;
+    $r.= '</button>';
+    return $r;
 }
