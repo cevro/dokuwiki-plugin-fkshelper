@@ -11,8 +11,14 @@ if (!defined('DOKU_INC')) {
 
 class helper_plugin_fkshelper extends DokuWiki_Plugin {
 
-    function returnMenu() {
-        global $lang;
+    /**
+     * talčítko pre návrat do menu z admin prostredia 
+     * 
+     * @author Michal Červeňák
+     * @return void
+     * @param null
+     */
+    public function returnMenu() {
         $form = new Doku_Form(array(
             'id' => "returntomenu",
             'method' => 'POST',
@@ -23,15 +29,24 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         html_form('returntomenu', $form);
     }
 
-    /*
-     * © Michal Červeňák
-     * 
-     * 
-     * 
-     * msg return html not print
+    /**
+     * call form not class
+     * @return void
+     * @param null
      */
+    public static function _returnMenu() {
+        $helper = new helper_plugin_fkshelper;
+        $helper->returnMenu();
+    }
 
-    function returnmsg($text, $lvl) {
+    /**
+     * msg return html not print
+     * @author = Michal Červeňák
+     * @return string html of msg
+     * 
+     * 
+     */
+    public static function returnmsg($text, $lvl) {
         ob_start();
         msg($text, $lvl);
         $msg = ob_get_contents();
@@ -39,21 +54,25 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         return $msg;
     }
 
-    /*
-     * © Michal Červeňák
-     * 
-     * 
+    /**
+     * @author Michal Červeňák
+     * @param string text for parsing
+     * @return array parameters
      * 
      * extract param from text
      */
-
     public static function extractParamtext($text) {
         foreach (preg_split('/;/', $text)as $key => $value) {
             list($k, $v) = preg_split('/=/', $value);
+            $k = str_replace(array("\n", " "), '', $k);
             $param[$k] = $v;
         }
         return $param;
     }
+
+    /**
+     * 
+     */
 
     public static function buildStyle($arr) {
         $r = "";
@@ -65,8 +84,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         } else {
             $r.=str_replace(',', ';', $arr);
         }
-        //var_dump($r);
-        //print_r($arr);
+
         return $r;
     }
 
@@ -97,4 +115,22 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         return $result;
     }
 
+}
+
+/*
+ * extend Doku html.php
+ */
+
+function html_facebook_btn($name = 'Share on FaceBook', $class = 'btn-social btn-facebook', $param = array()) {
+    $r.= '<button  ' . buildAttributes($param) . ' class="' . $class . '">';
+    $r.= '<i class="fa fa-facebook"></i>';
+    $r.= $name . '</button>';
+    return $r;
+}
+
+function html_button($name = 'btn', $class = 'btn', $params = array()) {
+    $r.='<button ' . buildAttributes($params) . ' class="' . $class . '">';
+    $r.=$name;
+    $r.= '</button>';
+    return $r;
 }
