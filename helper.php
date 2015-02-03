@@ -17,6 +17,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * talčítko pre návrat do menu z admin prostredia (možno do pluginu fksadminpage ?FR
      */
 
+
     /**
      * talčítko pre návrat do menu z admin prostredia 
      * 
@@ -25,6 +26,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * @param null
      */
     public function returnMenu() {
+
         $form = new Doku_Form(array(
             'id' => "returntomenu",
             'method' => 'POST',
@@ -34,6 +36,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         $form->addElement(form_makeButton('submit', '', $this->getLang('returntomenu')));
         html_form('returntomenu', $form);
     }
+
 
     /**
      * call form not class
@@ -53,12 +56,15 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * 
      */
     public static function returnmsg($text, $lvl) {
+
+        
         ob_start();
         msg($text, $lvl);
         $msg = ob_get_contents();
         ob_end_clean();
         return $msg;
     }
+
 
     /**
      * @author Michal Červeňák
@@ -73,14 +79,17 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
 
             $k = str_replace(array("\n", " "), '', $k);
 
+
             $param[$k] = $v;
         }
         return $param;
     }
 
+
     /**
      * 
      */
+
 
     public static function buildStyle($arr) {
         $r = "";
