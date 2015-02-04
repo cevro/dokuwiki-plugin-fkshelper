@@ -17,7 +17,6 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * talčítko pre návrat do menu z admin prostredia (možno do pluginu fksadminpage ?FR
      */
 
-
     /**
      * talčítko pre návrat do menu z admin prostredia 
      * 
@@ -37,7 +36,6 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         html_form('returntomenu', $form);
     }
 
-
     /**
      * call form not class
      * @return void
@@ -52,12 +50,13 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * msg return html not print
      * @author = Michal Červeňák
      * @return string html of msg
-     * 
+     * @param string $text 
+     * @param int $lvl
      * 
      */
     public static function returnmsg($text, $lvl) {
 
-        
+
         ob_start();
         msg($text, $lvl);
         $msg = ob_get_contents();
@@ -65,10 +64,9 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         return $msg;
     }
 
-
     /**
      * @author Michal Červeňák
-     * @param string text for parsing
+     * @param string $text for parsing
      * @return array parameters
      * 
      * extract param from text
@@ -85,12 +83,11 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         return $param;
     }
 
-
     /**
-     * 
+     * @author Michal Červeňák <miso@fykos.cz>
+     * @param array $arr atributes 
+     * @return string
      */
-
-
     public static function buildStyle($arr) {
         $r = "";
         if (is_array($arr)) {
@@ -105,6 +102,12 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         return $r;
     }
 
+    /**
+     * @author Michal Červeňák <miso@fykos.cz>
+     * @param string $dir
+     * @param bool $subdir
+     * @return array
+     */
     public static function filefromdir($dir, $subdir = true) {
         if ($subdir) {
             $result = array();
@@ -185,17 +188,31 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
 
 }
 
-/*
+/**
  * extend Doku html.php
  */
 
-function html_facebook_btn($name = 'Share on FaceBook', $class = 'btn-social btn-facebook', $param = array()) {
-    $r.= '<button  ' . buildAttributes($param) . ' class="' . $class . '">';
+/**
+ * @author Michal Červeňák <miso@fykos.cz>
+ * @param string $name
+ * @param string $class
+ * @param array $params
+ * @return string
+ */
+function html_facebook_btn($name = 'Share on FaceBook', $class = 'btn-social btn-facebook', $params = array()) {
+    $r.= '<button  ' . buildAttributes($params) . ' class="' . $class . '">';
     $r.= '<i class="fa fa-facebook"></i>';
     $r.= $name . '</button>';
     return $r;
 }
 
+/**
+ * @author Michal Červeňák <miso@fykos.cz>
+ * @param string $name
+ * @param string $class
+ * @param array $params
+ * @return string
+ */
 function html_button($name = 'btn', $class = 'btn', $params = array()) {
     $r.='<button ' . buildAttributes($params) . ' class="' . $class . '">';
     $r.=$name;
