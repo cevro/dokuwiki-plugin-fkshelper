@@ -151,7 +151,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * @param int $l lenght of string
      * @return string 
      */
-    public function _generate_rand($l = 5) {
+    public static function _generate_rand($l = 5) {
 
         $r = '';
         $seed = str_split('1234567890abcdefghijklmnopqrstuvwxyz'
@@ -195,4 +195,16 @@ function html_button($name = 'btn', $class = 'btn', $params = array()) {
     $r.=$name;
     $r.= '</button>';
     return $r;
+}
+
+function html_open_tag($tag,$attr){
+    return '<'.$tag.' '. buildAttributes($attr).'>';
+}
+
+function html_close_tag($tag){
+    return '</'.$tag.'>';
+}
+
+function html_make_tag($tag,$attr){
+     return '<'.$tag. ' '.  buildAttributes($attr).'/>';
 }
