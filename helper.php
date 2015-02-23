@@ -10,17 +10,12 @@ if (!defined('DOKU_INC')) {
 }
 
 class helper_plugin_fkshelper extends DokuWiki_Plugin {
-    /*
-     * © Michal Červeňák
-     * 
-     * 
-     * talčítko pre návrat do menu z admin prostredia (možno do pluginu fksadminpage ?FR
-     */
+    
 
     /**
      * talčítko pre návrat do menu z admin prostredia 
      * 
-     * @author Michal Červeňák
+     * @author Michal Červeňák <miso@fykos.cz>
      * @return void
      * @param null
      */
@@ -65,24 +60,26 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
     }
 
     /**
+     * extract param from text
      * @author Michal Červeňák
      * @param string $text for parsing
      * @return array parameters
      * 
-     * extract param from text
+     *
      */
     public static function extractParamtext($text) {
-        foreach (preg_split('/;/', $text)as $key => $value) {
+        foreach (preg_split('/;/', $text)as  $value) {
             list($k, $v) = preg_split('/=/', $value);
-            if (preg_match('/.*"([a-zA-Z0-9|\s|:]*)".*/', $v, $v_match)) {
-                $v = $v_match[1];
-            }
-             if (preg_match('/\s*([a-zA-Z0-9]*)\s*/', $k, $k_match)) {
-                 
-                 $k=$k_match[1];
-                 
-            }
             
+            if (preg_match('/.*"([\w\s:ěščřžýáíéóúůďťňĎŇŤŠČŘŽÝÁÍÉÚŮ]*)".*/', $v, $v_match)) {
+                $v = $v_match[1];
+                
+            } 
+            if (preg_match('/\s*([a-zA-z0-9]*)\s*/', $k, $k_match)) {
+
+                $k = $k_match[1];
+            }
+
             if ($v) {
                 $param[$k] = $v;
             } else {
@@ -197,14 +194,14 @@ function html_button($name = 'btn', $class = 'btn', $params = array()) {
     return $r;
 }
 
-function html_open_tag($tag,$attr){
-    return '<'.$tag.' '. buildAttributes($attr).'>';
+function html_open_tag($tag, $attr) {
+    return '<' . $tag . ' ' . buildAttributes($attr) . '>';
 }
 
-function html_close_tag($tag){
-    return '</'.$tag.'>';
+function html_close_tag($tag) {
+    return '</' . $tag . '>';
 }
 
-function html_make_tag($tag,$attr){
-     return '<'.$tag. ' '.  buildAttributes($attr).'/>';
+function html_make_tag($tag, $attr) {
+    return '<' . $tag . ' ' . buildAttributes($attr) . '/>';
 }
