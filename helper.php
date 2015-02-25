@@ -10,7 +10,6 @@ if (!defined('DOKU_INC')) {
 }
 
 class helper_plugin_fkshelper extends DokuWiki_Plugin {
-    
 
     /**
      * talčítko pre návrat do menu z admin prostredia 
@@ -67,26 +66,22 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * 
      *
      */
-    public static function extractParamtext($text) {
-        foreach (preg_split('/;/', $text)as  $value) {
-            list($k, $v) = preg_split('/=/', $value);
-            
-            if (preg_match('/.*"([\w\s:ěščřžýáíéóúůďťňĎŇŤŠČŘŽÝÁÍÉÚŮ]*)".*/', $v, $v_match)) {
+    public static function extractParamtext($text, $delimiter = ';', $sec_delimiter = '=') {
+        foreach (explode($delimiter, $text)as $value) {
+            list($k, $v) = explode($sec_delimiter, $value, 2);
+            if (preg_match('/.*"(.*)".*/', $v, $v_match)) {
                 $v = $v_match[1];
-                
-            } 
+            }
             if (preg_match('/\s*([a-zA-z0-9]*)\s*/', $k, $k_match)) {
-
                 $k = $k_match[1];
             }
-
             if ($v) {
                 $param[$k] = $v;
             } else {
                 $param[$k] = true;
             }
         }
-        
+
 
         return $param;
     }
