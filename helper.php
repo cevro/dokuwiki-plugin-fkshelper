@@ -72,9 +72,8 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
             if (preg_match('/.*"(.*)".*/', $v, $v_match)) {
                 $v = $v_match[1];
             }
-            if (preg_match('/\s*([a-zA-z0-9]*)\s*/', $k, $k_match)) {
-                $k = $k_match[1];
-            }
+            $v = trim($v);
+            $k = trim($k);
             if ($v) {
                 $param[$k] = $v;
             } else {
@@ -147,12 +146,21 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
 
         $r = '';
         $seed = str_split('1234567890abcdefghijklmnopqrstuvwxyz'
-                . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // and any other characters
+                . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        
         shuffle($seed);
         foreach (array_rand($seed, $l) as $k) {
             $r .= $seed[$k];
         }
         return (string) $r;
+    }
+
+    public static function _is_even($i) {
+        if ($i % 2) {
+            return 'even';
+        } else {
+            return 'odd';
+        }
     }
 
 }
@@ -189,7 +197,7 @@ function html_button($name = 'btn', $class = 'btn', $params = array()) {
     return $r;
 }
 
-function html_open_tag($tag, $attr) {
+function html_open_tag($tag, $attr = array()) {
     return '<' . $tag . ' ' . buildAttributes($attr) . '>';
 }
 
@@ -197,6 +205,6 @@ function html_close_tag($tag) {
     return '</' . $tag . '>';
 }
 
-function html_make_tag($tag, $attr) {
+function html_make_tag($tag, $attr = array()) {
     return '<' . $tag . ' ' . buildAttributes($attr) . '/>';
 }
