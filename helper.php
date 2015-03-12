@@ -72,12 +72,14 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
             if (preg_match('/.*"(.*)".*/', $v, $v_match)) {
                 $v = $v_match[1];
             }
-            $v = trim($v);
-            $k = trim($k);
-            if ($v) {
-                $param[$k] = $v;
-            } else {
-                $param[$k] = true;
+            if ($k) {
+                $v = trim($v);
+                $k = trim($k);
+                if ($v) {
+                    $param[$k] = $v;
+                } else {
+                    $param[$k] = true;
+                }
             }
         }
 
@@ -147,7 +149,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         $r = '';
         $seed = str_split('1234567890abcdefghijklmnopqrstuvwxyz'
                 . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-        
+
         shuffle($seed);
         foreach (array_rand($seed, $l) as $k) {
             $r .= $seed[$k];
