@@ -79,7 +79,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         $index = 0;
         $state = 0;
         while ( true ){
-            list($nindex, $nActChar) = getNextActiveChar($text, $index, $delimiter, $sec_delimiter, $packer);
+            list($nindex, $nActChar) = self::getNextActiveChar($text, $index, $delimiter, $sec_delimiter, $packer);
             switch ( $state ){
                 case 0:
                     switch ( $nActChar ){
@@ -87,12 +87,12 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
                         case 3: // null
                             $k = trim(substr($text, $index, $nindex-$index));
                             $v = true;
-                            if ( !testKey($k) ) $state     = 4;
+                            if ( !self::testKey($k) ) $state     = 4;
                             else                $param[$k] = $v;
                             break;
                         case 1: // =
                             $k = trim(substr($text, $index, $nindex-$index));
-                            if ( !testKey($k) ) $state = 4;
+                            if ( !self::testKey($k) ) $state = 4;
                             else                $state = 1;
                             break;
                         case 2: // "
