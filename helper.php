@@ -60,32 +60,138 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
 
     /**
      * extract param from text
-     * @author Michal Červeňák
+     * @author Lukáš Ledvina
      * @param string $text for parsing
      * @return array parameters
      * 
      *
      */
-    public static function extractParamtext($text, $delimiter = ';', $sec_delimiter = '=') {
-        foreach (explode($delimiter, $text)as $value) {
-            list($k, $v) = explode($sec_delimiter, $value, 2);
-            if (preg_match('/.*"(.*)".*/', $v, $v_match)) {
-                $v = $v_match[1];
-            }
-            if ($k) {
-                $v = trim($v);
-                $k = trim($k);
-                if ($v) {
+    public static function extractParamtext($text, $delimiter = ';', $sec_delimiter = '=', $packer = '"') 
+    {
+        $param = array();
+        $k = $v = "";
+// state:
+//  0: init
+//  1: wait for value
+//  2: wait for "end value
+//  3: final state
+//  4: error state
+        $index = 0;
+        $state = 0;
+        while ( true ){
+            list($nindex, $nActChar) = getNextActiveChar($text, $index, $delimiter, $sec_delimiter, $packer);
+            switch ( $state ){
+                case 0:
+                    switch ( $nActChar ){
+                        case 0: // ;
+                        case 3: // null
+                            $k = trim(substr($text, $index, $nindex-$index));
+                            $v = true;
+                            if ( !testKey($k) ) $state     = 4;
+                            else                $param[$k] = $v;
+                            break;
+                        case 1: // =
+                            $k = trim(substr($text, $index, $nindex-$index));
+                            if ( !testKey($k) ) $state = 4;
+                            else                $state = 1;
+                            break;
+                        case 2: // "
+                            $state = 4; // error
+                            break;
+                        case 4: // white only
+                            $state = 3; // end
+                            break;
+                    }
+                    break;
+                case 1:
+                    switch ( $nActChar ){
+                        case 0: // ;
+                        case 3: // null
+                        case 4: // white only
+                            $v = trim(substr($text, $index, $nindex-$index));
+                            if ($v == "" ){
+                                msg("extractParamtext: parse warning: empty value after =.",-1);
+                                $v = true;
+                            }
+                            $param[$k] = $v;
+                            $state = 0;
+                            break;
+                        case 1: // =
+                            msg("extractParamtext: parse error: 2x = in one expr.",-1);
+                            $state = 4;
+                            break;
+                        case 2: // "
+                            if ( trim(substr($text, $index, $nindex-$index)) == "" ) {
+                                $state = 2;
+                            } else {
+                                msg("extractParamtext: parse error: chars between = and \".",-1);
+                                $state = 4;
+                            }
+                            break;
+                    }
+                    break;
+                case 2:
+                    $nindex = strlen($text)+1;
+                    for ( $i=$index; $i < strlen($text); $i++ ) {
+                        if ( $text[$i] == $packer ){
+                            $nindex = $i + 1;
+                            break;
+                        }
+                    }
+                    $v = substr($text, $index, $nindex-$index-1);
+                    if ($v == "" ) $v = true;
                     $param[$k] = $v;
-                } else {
-                    $param[$k] = true;
-                }
+                    $state = 0;
+                    break;
+                case 3:
+                    return $param;
+                case 4:
+                    return $param;
+            }
+            $index = $nindex + 1;
+        }
+    }
+
+    /**
+     * test if key is valid (for extractParamtext)
+     * @author Lukáš Ledvina
+     * @param string $key
+     * @return bool
+     * 
+     *
+     */
+    private static function testKey( $text )
+    {
+        $ret = ctype_alnum($text);
+        if ( !$ret ) msg("extractParamtext: parse error: Key \"".$text."\" is not valid",-1);
+        return $ret;
+    }
+
+    /**
+     * get next active char from text (for extractParamtext)
+     * @author Lukáš Ledvina
+     * @param string $text for parsing, $begin of parsing
+     * @return array (position,type)
+     * 
+     *
+     */
+    private static function getNextActiveChar($text, $begin, $delimiter = ';', $sec_delimiter = '=', $packer = '"')
+    {
+        if ( trim( substr( $text, $begin ) ) == "" )
+            return array(strlen($text), 4);
+        for ( $i=$begin; $i < strlen($text); $i++ ) {
+            switch ( $text[$i] ) {
+                case $delimiter:
+                    return array($i, 0);
+                case $sec_delimiter:
+                    return array($i, 1);
+                case $packer:
+                    return array($i, 2);
             }
         }
-
-
-        return $param;
+        return array(strlen($text), 3);
     }
+
 
     /**
      * @author Michal Červeňák <miso@fykos.cz>
@@ -210,3 +316,4 @@ function html_close_tag($tag) {
 function html_make_tag($tag, $attr = array()) {
     return '<' . $tag . ' ' . buildAttributes($attr) . '/>';
 }
+
