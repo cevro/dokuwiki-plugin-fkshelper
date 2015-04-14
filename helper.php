@@ -305,15 +305,31 @@ function html_button($name = 'btn', $class = 'btn', $params = array()) {
     return $r;
 }
 
-function html_open_tag($tag, $attr = array()) {
+function FKS_html_open_tag($tag, $attr = array()) {
+    
     return '<' . $tag . ' ' . buildAttributes($attr) . '>';
 }
 
+function html_open_tag($tag, $attr = array()) {
+    
+    return FKS_html_open_tag($tag, $attr );
+}
+
 function html_close_tag($tag) {
+    
+    return FKS_html_close_tag($tag);
+}
+
+function FKS_html_close_tag($tag) {
     return '</' . $tag . '>';
 }
 
 function html_make_tag($tag, $attr = array()) {
+   
+    return FKS_html_make_tag($tag, $attr);
+    
+}
+function FKS_html_make_tag($tag, $attr = array()) {
+   
     return '<' . $tag . ' ' . buildAttributes($attr) . '/>';
 }
-
