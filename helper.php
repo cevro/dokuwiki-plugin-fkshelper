@@ -219,6 +219,12 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * @return array
      */
     public static function filefromdir($dir, $subdir = true) {
+        if(!file_exists($dir)){
+            msg('Failed to open stream',-1);
+            //throw new InvalidArgumentException('Directory don\'t exist');
+            return;
+        }
+        
         if ($subdir) {
             $result = array();
             $cdir = scandir($dir);
@@ -285,9 +291,9 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
  * @return string
  */
 function html_facebook_btn($name = 'Share on FaceBook', $class = 'btn-social btn-facebook', $params = array()) {
-    $r.= '<button  ' . buildAttributes($params) . ' class="' . $class . '">';
-    $r.= '<i class="fa fa-facebook"></i>';
-    $r.= $name . '</button>';
+    $r.= '<div  ' . buildAttributes($params) . ' class="' . $class . '">';
+    
+    $r.= $name . '</div>';
     return $r;
 }
 
