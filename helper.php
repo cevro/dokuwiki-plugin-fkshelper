@@ -5,7 +5,7 @@
  * @author     Michal Červeňák <miso@fykos.cz>
  */
 // must be run within Dokuwiki
-if (!defined('DOKU_INC')) {
+if(!defined('DOKU_INC')){
     die();
 }
 
@@ -23,11 +23,11 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         $form = new Doku_Form(array(
             'id' => "returntomenu",
             'method' => 'POST',
-            'action' => DOKU_BASE . "?do=admin"
+            'action' => DOKU_BASE."?do=admin"
         ));
 
-        $form->addElement(form_makeButton('submit', '', $this->getLang('returntomenu')));
-        html_form('returntomenu', $form);
+        $form->addElement(form_makeButton('submit','',$this->getLang('returntomenu')));
+        html_form('returntomenu',$form);
     }
 
     /**
@@ -48,11 +48,11 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * @param int $lvl
      * 
      */
-    public static function returnmsg($text, $lvl) {
+    public static function returnmsg($text,$lvl) {
 
 
         ob_start();
-        msg($text, $lvl);
+        msg($text,$lvl);
         $msg = ob_get_contents();
         ob_end_clean();
         return $msg;
@@ -66,8 +66,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * 
      *
      */
-    public static function extractParamtext($text, $delimiter = ';', $sec_delimiter = '=', $packer = '"') 
-    {
+    public static function extractParamtext($text,$delimiter = ';',$sec_delimiter = '=',$packer = '"') {
         $param = array();
         $k = $v = "";
 // state:
@@ -78,22 +77,22 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
 //  4: error state
         $index = 0;
         $state = 0;
-        while ( true ){
-            list($nindex, $nActChar) = self::getNextActiveChar($text, $index, $delimiter, $sec_delimiter, $packer);
-            switch ( $state ){
+        while (true) {
+            list($nindex,$nActChar) = self::getNextActiveChar($text,$index,$delimiter,$sec_delimiter,$packer);
+            switch ($state) {
                 case 0:
-                    switch ( $nActChar ){
+                    switch ($nActChar) {
                         case 0: // ;
                         case 3: // null
-                            $k = trim(substr($text, $index, $nindex-$index));
+                            $k = trim(substr($text,$index,$nindex - $index));
                             $v = true;
-                            if ( !self::testKey($k) ) $state     = 4;
-                            else                $param[$k] = $v;
+                            if(!self::testKey($k)) $state = 4;
+                            else $param[$k] = $v;
                             break;
                         case 1: // =
-                            $k = trim(substr($text, $index, $nindex-$index));
-                            if ( !self::testKey($k) ) $state = 4;
-                            else                $state = 1;
+                            $k = trim(substr($text,$index,$nindex - $index));
+                            if(!self::testKey($k)) $state = 4;
+                            else $state = 1;
                             break;
                         case 2: // "
                             $state = 4; // error
@@ -104,12 +103,12 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
                     }
                     break;
                 case 1:
-                    switch ( $nActChar ){
+                    switch ($nActChar) {
                         case 0: // ;
                         case 3: // null
                         case 4: // white only
-                            $v = trim(substr($text, $index, $nindex-$index));
-                            if ($v == "" ){
+                            $v = trim(substr($text,$index,$nindex - $index));
+                            if($v == ""){
                                 msg("extractParamtext: parse warning: empty value after =.",-1);
                                 $v = true;
                             }
@@ -121,9 +120,9 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
                             $state = 4;
                             break;
                         case 2: // "
-                            if ( trim(substr($text, $index, $nindex-$index)) == "" ) {
+                            if(trim(substr($text,$index,$nindex - $index)) == ""){
                                 $state = 2;
-                            } else {
+                            }else{
                                 msg("extractParamtext: parse error: chars between = and \".",-1);
                                 $state = 4;
                             }
@@ -131,15 +130,15 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
                     }
                     break;
                 case 2:
-                    $nindex = strlen($text)+1;
-                    for ( $i=$index; $i < strlen($text); $i++ ) {
-                        if ( $text[$i] == $packer ){
+                    $nindex = strlen($text) + 1;
+                    for ($i = $index; $i < strlen($text); $i++) {
+                        if($text[$i] == $packer){
                             $nindex = $i + 1;
                             break;
                         }
                     }
-                    $v = substr($text, $index, $nindex-$index-1);
-                    if ($v == "" ) $v = true;
+                    $v = substr($text,$index,$nindex - $index - 1);
+                    if($v == "") $v = true;
                     $param[$k] = $v;
                     $state = 0;
                     break;
@@ -160,10 +159,11 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * 
      *
      */
-    private static function testKey( $text )
-    {
+    private static function testKey($text) {
         $ret = ctype_alnum($text);
-        if ( !$ret ) msg("extractParamtext: parse error: Key \"".$text."\" is not valid",-1);
+        if(!$ret){
+            msg("extractParamtext: parse error: Key \"".$text."\" is not valid",-1,'','',MSG_USERS_ONLY);
+        }
         return $ret;
     }
 
@@ -175,23 +175,20 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * 
      *
      */
-    private static function getNextActiveChar($text, $begin, $delimiter = ';', $sec_delimiter = '=', $packer = '"')
-    {
-        if ( trim( substr( $text, $begin ) ) == "" )
-            return array(strlen($text), 4);
-        for ( $i=$begin; $i < strlen($text); $i++ ) {
-            switch ( $text[$i] ) {
+    private static function getNextActiveChar($text,$begin,$delimiter = ';',$sec_delimiter = '=',$packer = '"') {
+        if(trim(substr($text,$begin)) == "") return array(strlen($text),4);
+        for ($i = $begin; $i < strlen($text); $i++) {
+            switch ($text[$i]) {
                 case $delimiter:
-                    return array($i, 0);
+                    return array($i,0);
                 case $sec_delimiter:
-                    return array($i, 1);
+                    return array($i,1);
                 case $packer:
-                    return array($i, 2);
+                    return array($i,2);
             }
         }
-        return array(strlen($text), 3);
+        return array(strlen($text),3);
     }
-
 
     /**
      * @author Michal Červeňák <miso@fykos.cz>
@@ -200,13 +197,13 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      */
     public static function buildStyle($arr) {
         $r = "";
-        if (is_array($arr)) {
+        if(is_array($arr)){
             foreach ($arr as $key => $value) {
-                $r.=rawurldecode($key) . ':';
-                $r.=rawurldecode($value) . ';';
+                $r.=rawurldecode($key).':';
+                $r.=rawurldecode($value).';';
             }
-        } else {
-            $r.=str_replace(',', ';', $arr);
+        }else{
+            $r.=str_replace(',',';',$arr);
         }
 
         return $r;
@@ -218,32 +215,35 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * @param bool $subdir
      * @return array
      */
-    public static function filefromdir($dir, $subdir = true) {
+    public static function filefromdir($dir,$subdir = true) {
         if(!file_exists($dir)){
-            msg('Failed to open stream',-1);
+            msg('Failed to open stream',-1,'','',MSG_USERS_ONLY);
             //throw new InvalidArgumentException('Directory don\'t exist');
             return;
         }
-        
-        if ($subdir) {
+        if (is_file($dir)){
+            return array($dir);
+        }
+
+        if($subdir){
             $result = array();
             $cdir = scandir($dir);
             foreach ($cdir as $key => $value) {
-                if (!in_array($value, array(".", ".."))) {
-                    if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
-                        $result = array_merge($result, self::filefromdir($dir . DIRECTORY_SEPARATOR . $value));
-                    } else {
-                        $result[] = $dir . DIRECTORY_SEPARATOR . $value;
+                if(!in_array($value,array(".",".."))){
+                    if(is_dir($dir.DIRECTORY_SEPARATOR.$value)){
+                        $result = array_merge($result,self::filefromdir($dir.DIRECTORY_SEPARATOR.$value));
+                    }else{
+                        $result[] = $dir.DIRECTORY_SEPARATOR.$value;
                     }
                 }
             }
-        } else {
+        }else{
             $result = array();
             $cdir = scandir($dir);
             foreach ($cdir as $key => $value) {
-                if (!in_array($value, array(".", ".."))) {
-                    if (!is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
-                        $result[] = $dir . DIRECTORY_SEPARATOR . $value;
+                if(!in_array($value,array(".",".."))){
+                    if(!is_dir($dir.DIRECTORY_SEPARATOR.$value)){
+                        $result[] = $dir.DIRECTORY_SEPARATOR.$value;
                     }
                 }
             }
@@ -260,19 +260,19 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
 
         $r = '';
         $seed = str_split('1234567890abcdefghijklmnopqrstuvwxyz'
-                . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                .'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 
         shuffle($seed);
-        foreach (array_rand($seed, $l) as $k) {
+        foreach (array_rand($seed,$l) as $k) {
             $r .= $seed[$k];
         }
         return (string) $r;
     }
 
     public static function _is_even($i) {
-        if ($i % 2) {
+        if($i % 2){
             return 'even';
-        } else {
+        }else{
             return 'odd';
         }
     }
@@ -290,10 +290,10 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
  * @param array $params
  * @return string
  */
-function html_facebook_btn($name = 'Share on FaceBook', $class = 'btn-social btn-facebook', $params = array()) {
-    $r.= '<div  ' . buildAttributes($params) . ' class="' . $class . '">';
-    
-    $r.= $name . '</div>';
+function html_facebook_btn($name = 'Share on FaceBook',$class = 'btn-social btn-facebook',$params = array()) {
+    $r.= '<div  '.buildAttributes($params).' class="'.$class.'">';
+
+    $r.= $name.'</div>';
     return $r;
 }
 
@@ -304,38 +304,38 @@ function html_facebook_btn($name = 'Share on FaceBook', $class = 'btn-social btn
  * @param array $params
  * @return string
  */
-function html_button($name = 'btn', $class = 'btn', $params = array()) {
-    $r.='<button ' . buildAttributes($params) . ' class="' . $class . '">';
+function html_button($name = 'btn',$class = 'btn',$params = array()) {
+    $r.='<button '.buildAttributes($params).' class="'.$class.'">';
     $r.=$name;
     $r.= '</button>';
     return $r;
 }
 
-function FKS_html_open_tag($tag, $attr = array()) {
-    
-    return '<' . $tag . ' ' . buildAttributes($attr) . '>';
+function FKS_html_open_tag($tag,$attr = array()) {
+
+    return '<'.$tag.' '.buildAttributes($attr).'>';
 }
 
-function html_open_tag($tag, $attr = array()) {
-    
-    return FKS_html_open_tag($tag, $attr );
+function html_open_tag($tag,$attr = array()) {
+
+    return FKS_html_open_tag($tag,$attr);
 }
 
 function html_close_tag($tag) {
-    
+
     return FKS_html_close_tag($tag);
 }
 
 function FKS_html_close_tag($tag) {
-    return '</' . $tag . '>';
+    return '</'.$tag.'>';
 }
 
-function html_make_tag($tag, $attr = array()) {
-   
-    return FKS_html_make_tag($tag, $attr);
-    
+function html_make_tag($tag,$attr = array()) {
+
+    return FKS_html_make_tag($tag,$attr);
 }
-function FKS_html_make_tag($tag, $attr = array()) {
-   
-    return '<' . $tag . ' ' . buildAttributes($attr) . '/>';
+
+function FKS_html_make_tag($tag,$attr = array()) {
+
+    return '<'.$tag.' '.buildAttributes($attr).'/>';
 }
