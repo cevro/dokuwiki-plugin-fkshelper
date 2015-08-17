@@ -15,6 +15,15 @@ class action_plugin_fkshelper extends DokuWiki_Action_Plugin {
     public function register(Doku_Event_Handler $controller) {
 
         $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'anti_spam');
+        $controller->register_hook('PARSE_INI_FILE','BEFORE',$this,'change_ini');
+    }
+    
+    public function change_ini(Doku_Event &$event, $param){
+        
+      //  $event->data['ini']='/var/www/html/vyfuk_web/lib/tpl/vyfuk/style.ini';
+        $event->data['ini']='/var/www/html/vyfuk_web/lib/tpl/vyfuk/style_valentine.ini';
+        $event->data['cashe']->removeCache();
+        //var_dump($event);
     }
 
     public function anti_spam(Doku_Event &$event, $param) {
