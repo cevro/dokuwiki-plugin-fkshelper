@@ -37,7 +37,7 @@ class syntax_plugin_fkshelper_svg extends DokuWiki_Syntax_Plugin {
      */
     public function handle($match,$state) {
 
-        preg_match('#scr="(.*)"#',$match,$matches);
+        preg_match('#src="(.*)"#',$match,$matches);
         list(,$src) = $matches;
 
         return array($state,array('src' => trim($src)));
@@ -46,8 +46,15 @@ class syntax_plugin_fkshelper_svg extends DokuWiki_Syntax_Plugin {
     public function render($mode,Doku_Renderer &$renderer,$data) {
         if($mode == 'xhtml'){
             list(,$data) = $data;
-
-            $renderer->doc.='<object type="image/svg+xml" data="'.$data['src'].'"></object>';
+            $p = pathinfo($data['src']);
+            if($p['extension']=='svg'){
+                $patch=  mediaFN($data['src']);
+                
+                $renderer->doc.=io_readFile($patch);
+            }else{
+                msg('File is not svg',-1);
+            }
+            
 
 
             return true;
