@@ -15,7 +15,7 @@ class action_plugin_fkshelper extends DokuWiki_Action_Plugin {
     public function register(Doku_Event_Handler $controller) {
 
         $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'anti_spam');
-        $controller->register_hook('PARSE_INI_FILE','BEFORE',$this,'change_ini');
+       // $controller->register_hook('PARSE_INI_FILE','BEFORE',$this,'change_ini');
     }
     
     public function change_ini(Doku_Event &$event, $param){

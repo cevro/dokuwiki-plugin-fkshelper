@@ -41,6 +41,12 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         $helper = new helper_plugin_fkshelper;
         $helper->returnMenu();
     }
+    /**
+     * 
+     */
+    public static function HTML5Test(){
+        echo '<div class="html5_test" id="html5_test"></div>';
+    }
 
     /**
      * msg return html not print
