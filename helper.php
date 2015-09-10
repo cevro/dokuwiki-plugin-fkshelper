@@ -13,6 +13,21 @@ require_once __DIR__.'/form2.php';
 
 class helper_plugin_fkshelper extends DokuWiki_Plugin {
 
+    static $fields = array('name','org_id','person_id','contest_id','since','until',
+        'role',
+        'order',
+        'contribution',
+        'career',
+        'domain_alias',
+        'tex_signature',
+        'email');
+    public $downloader;
+   
+
+    function __construct() {
+        $this->downloader = $this->loadHelper('fksdownloader');
+    }
+
     /**
      * talčítko pre návrat do menu z admin prostredia 
      * 
@@ -41,10 +56,11 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         $helper = new helper_plugin_fkshelper;
         $helper->returnMenu();
     }
+
     /**
      * 
      */
-    public static function HTML5Test(){
+    public static function HTML5Test() {
         echo '<div class="html5_test" id="html5_test"></div>';
     }
 
@@ -285,6 +301,20 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         }
     }
 
+    public function getOrgData($id) {
+        $r = $this->downloader->downloadExport(1,'org.person',array('contest' => 'fykos','person_id' => $id),2);
+
+        $xml = new DOMDocument();
+        $xml->loadXML($r);
+        $data = array();
+        foreach (self::$fields as $field) {
+            foreach ($xml->getElementsByTagName($field) as $v) {
+                $data[$field] = $v->nodeValue;
+            }
+        }
+        return $data;
+    }
+
 }
 
 /**
@@ -347,6 +377,3 @@ function FKS_html_make_tag($tag,$attr = array()) {
 
     return '<'.$tag.' '.buildAttributes($attr).'/>';
 }
-
-
-    

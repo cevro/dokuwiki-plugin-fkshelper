@@ -7,3 +7,4 @@
  */
 
 $meta['deny_html_out']=array();
+$meta['org_page']=array('string');

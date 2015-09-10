@@ -10,7 +10,7 @@ jQuery(function () {
 
         var datetime = document.createElement("input");
         datetime.setAttribute("type", "datetime-local");
-        if (datetime.type === "text") { 
+        if (datetime.type === "text") {
             /* FUCK FF!!! */
             if (!confirm('Tento prehliadač nepodporuje HTML5 input datetime-local. Chcete aj napriek tomu vyplniť tento formulár?')) {
                 window.history.back();
@@ -20,13 +20,84 @@ jQuery(function () {
         }
         var week = document.createElement("input");
         week.setAttribute("type", "week");
-        if (week.type === "text") { 
+        if (week.type === "text") {
             if (!confirm('Tento prehliadač nepodporuje HTML5 input week. Chcete aj napriek tomu vyplniť tento formulár?')) {
                 window.history.back();
-            }            else {
+            } else {
                 //window.history.back();
             }
         }
     });
+
+
+    $('span.org').mousemove(function (event) {
+        var person_id = $(this).attr('id');
+        var $divImg = $('div#img_' + person_id + '.orgIconFloat');
+        var pos = ___getPageScroll();
+        $divImg.css({left: pos[0] + event.clientX + 10 + 'px', top: pos[1] + event.clientY + 10 + 'px'});
+    }).mouseleave(function (event) {
+        $('div.orgIconFloat').hide();
+    }).mouseenter(function (event) {
+        var person_id = $(this).attr('id');
+        if ($('div#img_' + person_id + '.orgIconFloat').length) {
+            var $divImg = $('div#img_' + person_id + '.orgIconFloat');
+            $divImg.show();
+        } else {
+            /*
+            $.post(DOKU_BASE + 'lib/exe/ajax.php',
+                    {
+                        call: 'plugin_fksnewsfeed',
+                        target: 'feed',
+                        name: 'local',
+                        news_do: 'stream',
+                        news_stream: $(this).data("stream"),
+                        news_feed_s: 0,
+                        news_feed_l: $(this).data("feed")
+                    },
+            function (data) {
+                $stream.html(data["r"]);
+            },
+                    'json');*/
+            var img = document.createElement('img');
+            var divImg = document.createElement('div');
+            $(divImg).addClass('orgIconFloat');
+            $(divImg).attr('id', 'img_' + person_id);
+            /**FIXME path to photos!!!*/
+            img.src = DOKU_BASE + "_media/o-nas/orgs/" + person_id + ".jpg";
+            console.log(divImg, img);
+            $(img).load(function (r, status) {
+                
+                if (status == "error") {
+
+                    return false;
+                } else {
+                    divImg.appendChild(img);
+                    
+                    $('body').append(divImg);
+                    //that.appendChild(divImg);
+                    $(divImg).css({position: 'absolute'});
+                }
+
+            });
+
+        }
+    });
+
+    function ___getPageScroll() {
+        var xScroll, yScroll;
+        if (self.pageYOffset) {
+            yScroll = self.pageYOffset;
+            xScroll = self.pageXOffset;
+        } else if (document.documentElement && document.documentElement.scrollTop) {	 // Explorer 6 Strict
+            yScroll = document.documentElement.scrollTop;
+            xScroll = document.documentElement.scrollLeft;
+        } else if (document.body) {// all other Explorers
+            yScroll = document.body.scrollTop;
+            xScroll = document.body.scrollLeft;
+        }
+        var arrayPageScroll = new Array(xScroll, yScroll);
+        return arrayPageScroll;
+    }
+    ;
 
 });
