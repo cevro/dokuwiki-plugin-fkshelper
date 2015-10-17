@@ -23,7 +23,7 @@ class admin_plugin_fkshelper extends DokuWiki_Admin_Plugin {
     );
 
     public function __construct() {
-        $this->helper = $this->loadHelper('fksadminpage');
+       // $this->helper = $this->loadHelper('fksadminpage');
     }
 
     function getMenuSort() {
@@ -47,7 +47,7 @@ class admin_plugin_fkshelper extends DokuWiki_Admin_Plugin {
     function html() {
 
         foreach ($this->pages as $value) {
-            var_dump($value);
+            //var_dump($value);
             @list($id,$name) = $value;
 
             if(!$name){
