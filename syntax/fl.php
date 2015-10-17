@@ -29,16 +29,16 @@ class syntax_plugin_fkshelper_fl extends DokuWiki_Syntax_Plugin {
 
     public function connectTo($mode) {
 
-        $this->Lexer->addSpecialPattern('{{fl>.*\|.*}}',$mode,'plugin_fkshelper_fl');
+        $this->Lexer->addSpecialPattern('{{fl>.+?\|.+?}}',$mode,'plugin_fkshelper_fl');
     }
 
     /**
      * Handle the match
      */
     public function handle($match,$state) {
-        //  var_dump($match);
+        
         preg_match('/{{\s*fl\s*>(.*)\|(.*)}}/',$match,$matches);
-        //var_dump($matches);
+       
         list(,$link,$text) = $matches;
 
         return array($state,$link,$text);
@@ -55,9 +55,12 @@ class syntax_plugin_fkshelper_fl extends DokuWiki_Syntax_Plugin {
             $renderer->doc.=htmlspecialchars(trim($text));
             $renderer->doc.='</button>';
             $renderer->doc.='</a>';
+           
+            return true  ;
         }
+        return false;
 
-        return true;
+        
     }
 
 }
