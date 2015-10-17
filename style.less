@@ -12,6 +12,9 @@ and open the template in the editor.
     border:1px solid @ini_text_alt;
     margin:2px;
     width: 80px;
+    img{
+        width: 100%;
+    }
 }
 
 span.org{
@@ -23,4 +26,21 @@ span.org{
     background-image: url(images/person.svg);
     background-size: 1em;
     background-repeat: no-repeat;
+}
+
+button.fast_link{
+    &:hover,&:active{
+        background-color: @ini_text_alt;
+        background-image: linear-gradient(to bottom, lighten(@ini_text_alt,30%),lighten(@ini_text_alt,10%)); 
+        
+    }
+    border: none;
+    font-weight: bold;
+    width: 100%;
+    background-color: @ini_text_alt;
+    background-image: linear-gradient(to bottom, @ini_text_alt,darken(@ini_text_alt,20%));
+    color:white;
+    padding: 1em;
+
+
 }

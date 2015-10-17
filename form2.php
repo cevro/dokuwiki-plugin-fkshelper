@@ -99,17 +99,15 @@ if(!function_exists('form2_makeDateTimeField')){
         if(is_null($label)){
             $label = $name;
         }
-        if($value == null){
+        if($value == null || $value==0){
             $value = date('Y-m-d\TH:i:s',time());
-        }elseif($value==0){
-            $value="";
         }
         $elem = array('_elem' => 'datetimefield','_text' => $label,'_class' => $class,
             'id' => $id,'name' => $name,'value' => $value,'class' => 'edit','step' => $step);
         if($required){
             $elem['required'] = 'required';
         }
-        return array_merge($elem,$attrs);
+        return array_merge($elem,$attrs,array('pattern' => '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}'));
     }
 
     /**
