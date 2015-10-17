@@ -314,6 +314,12 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         }
         return $data;
     }
+    
+    public function scaleOrgPhoto($peron_id,$h) {
+
+        $link = ml('o-nas/orgs/'.$this->getConf('org_photo').':'.$peron_id.'.jpg',array('h' => $h),true,'&');
+        return $link;
+    }
 
 }
 

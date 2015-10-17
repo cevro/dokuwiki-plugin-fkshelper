@@ -43,42 +43,37 @@ jQuery(function () {
             var $divImg = $('div#img_' + person_id + '.orgIconFloat');
             $divImg.show();
         } else {
-            /*
+
             $.post(DOKU_BASE + 'lib/exe/ajax.php',
                     {
                         call: 'plugin_fksnewsfeed',
-                        target: 'feed',
+                        target: 'person',
                         name: 'local',
-                        news_do: 'stream',
-                        news_stream: $(this).data("stream"),
-                        news_feed_s: 0,
-                        news_feed_l: $(this).data("feed")
+                    
+                        person_id: person_id
+
                     },
             function (data) {
-                $stream.html(data["r"]);
+
+                var src = data['src'];
+                console.log(src);
+                var img = document.createElement('img');
+                var divImg = document.createElement('div');
+                $(divImg).addClass('orgIconFloat');
+                $(divImg).attr('id', 'img_' + person_id);
+                /**FIXME path to photos!!!*/
+                img.src = src;
+                console.log(divImg, img);
+
+                divImg.appendChild(img);
+
+                $('body').append(divImg);
+                //that.appendChild(divImg);
+                $(divImg).css({position: 'absolute'});
+
             },
-                    'json');*/
-            var img = document.createElement('img');
-            var divImg = document.createElement('div');
-            $(divImg).addClass('orgIconFloat');
-            $(divImg).attr('id', 'img_' + person_id);
-            /**FIXME path to photos!!!*/
-            img.src = DOKU_BASE + "_media/o-nas/orgs/" + person_id + ".jpg";
-            console.log(divImg, img);
-            $(img).load(function (r, status) {
-                
-                if (status == "error") {
+                    'json');
 
-                    return false;
-                } else {
-                    divImg.appendChild(img);
-                    
-                    $('body').append(divImg);
-                    //that.appendChild(divImg);
-                    $(divImg).css({position: 'absolute'});
-                }
-
-            });
 
         }
     });
@@ -99,5 +94,6 @@ jQuery(function () {
         return arrayPageScroll;
     }
     ;
-
+  
 });
+
