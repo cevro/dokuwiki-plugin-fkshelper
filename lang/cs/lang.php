@@ -49,10 +49,10 @@ $lang['newsname']         = 'Nadpis';
 $lang['name']             = 'Nadpis';
 $lang['viewmore']         = 'Zobrazit podrobnosti';
 
-$lang['length']           = 'Dĺžka';
+$lang['length']           = 'Délka';
 $lang['old']              = 'starých dat:';
 $lang['new']              = 'nových dat:';
-$lang['dataerror']        = 'Data boli medzčasom zmenené';
+$lang['dataerror']        = 'Data byla mezitím změněna';
 
 $lang['subaddwikinews']   = 'Přejít k vytvoření aktuality';
 */
@@ -76,14 +76,14 @@ $lang['dec']              = 'prosince';
 
 
 
-$lang['changedir']              = 'zmeniť adresár';
-$lang['changestream']              = 'zmeniť stream';
-$lang['dir']              = 'adresár';
-$lang['stream']              = 'stream';
+$lang['changedir']              = 'změnit adresář';
+$lang['changestream']              = 'změnit vlákno';
+$lang['dir']              = 'adresář';
+$lang['stream']              = 'vlákno';
 
 $lang['id']              = 'ID';
 
-$lang['findnews']              = 'nájdi novinku';
+$lang['findnews']              = 'najdi novinku';
 
 
 */
