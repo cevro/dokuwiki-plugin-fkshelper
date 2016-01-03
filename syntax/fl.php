@@ -35,13 +35,13 @@ class syntax_plugin_fkshelper_fl extends DokuWiki_Syntax_Plugin {
     /**
      * Handle the match
      */
-    public function handle($match,$state) {       
-        
-        preg_match('/{{\s*fl(.*)>(.*)\|(.*)}}/',$match,$matches);     
-        
+    public function handle($match,$state) {
+
+        preg_match('/{{\s*fl(.*)>(.*)\|(.*)}}/',$match,$matches);
+
         list(,$attrs,$link,$text) = $matches;
-        preg_match('/\.([a-zA-z0-9-_]*)/',$attrs,$classs);         
-         preg_match('/\#([a-zA-z0-9-_]*)/',$attrs,$ids);
+        preg_match('/\.([a-zA-z0-9-_]*)/',$attrs,$classs);
+        preg_match('/\#([a-zA-z0-9-_]*)/',$attrs,$ids);
 
         return array($state,$link,$text,$classs[1],$ids[1]);
     }
@@ -50,19 +50,19 @@ class syntax_plugin_fkshelper_fl extends DokuWiki_Syntax_Plugin {
 
         if($mode == 'xhtml'){
             list($state,$link,$text,$class,$id) = $data;
-
+            if(!$class){
+                $class = "default";
+            }
             $renderer->doc.='<div class="clearer"></div>';
             $renderer->doc.='<a href="'.wl(cleanID($link)).'">';
             $renderer->doc.='<button class="fast_link '.urlencode($class).'" id="'.urlencode($id).'">';
             $renderer->doc.=htmlspecialchars(trim($text));
             $renderer->doc.='</button>';
             $renderer->doc.='</a>';
-           
-            return true  ;
+
+            return true;
         }
         return false;
-
-        
     }
 
 }
