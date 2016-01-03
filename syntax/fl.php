@@ -29,29 +29,31 @@ class syntax_plugin_fkshelper_fl extends DokuWiki_Syntax_Plugin {
 
     public function connectTo($mode) {
 
-        $this->Lexer->addSpecialPattern('{{fl>.+?\|.+?}}',$mode,'plugin_fkshelper_fl');
+        $this->Lexer->addSpecialPattern('{{fl.*?\>.+?\|.+?}}',$mode,'plugin_fkshelper_fl');
     }
 
     /**
      * Handle the match
      */
-    public function handle($match,$state) {
+    public function handle($match,$state) {       
         
-        preg_match('/{{\s*fl\s*>(.*)\|(.*)}}/',$match,$matches);
-       
-        list(,$link,$text) = $matches;
+        preg_match('/{{\s*fl(.*)>(.*)\|(.*)}}/',$match,$matches);     
+        
+        list(,$attrs,$link,$text) = $matches;
+        preg_match('/\.([a-zA-z0-9-_]*)/',$attrs,$classs);         
+         preg_match('/\#([a-zA-z0-9-_]*)/',$attrs,$ids);
 
-        return array($state,$link,$text);
+        return array($state,$link,$text,$classs[1],$ids[1]);
     }
 
     public function render($mode,Doku_Renderer &$renderer,$data) {
 
         if($mode == 'xhtml'){
-            list($state,$link,$text) = $data;
+            list($state,$link,$text,$class,$id) = $data;
 
             $renderer->doc.='<div class="clearer"></div>';
             $renderer->doc.='<a href="'.wl(cleanID($link)).'">';
-            $renderer->doc.='<button class="fast_link">';
+            $renderer->doc.='<button class="fast_link '.urlencode($class).'" id="'.urlencode($id).'">';
             $renderer->doc.=htmlspecialchars(trim($text));
             $renderer->doc.='</button>';
             $renderer->doc.='</a>';

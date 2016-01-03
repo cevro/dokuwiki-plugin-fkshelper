@@ -7,40 +7,49 @@ and open the template in the editor.
     Created on : Sep 7, 2015, 2:40:10 AM
     Author     : root
 */
+@danger_color:#da1111;
+@warning_color:#da7511;
+@success_color:#11da75;
+@edit_color:#1175da;
 
-.orgIconFloat{
-    border:1px solid @ini_text_alt;
-    margin:2px;
-    width: 80px;
-    img{
-        width: 100%;
-    }
-}
 
-span.org{
+.buttonsFCE(@c) when (iscolor(@c)){
+    &:hover,&.active,&:active,&:focus{
+        background-color: darken(@c,10%);
+        background-image: linear-gradient(to bottom,darken(@c,10%),darken(@c,20%));
+        color:white;
+    }     
+    background-color: @c;
+    background-image: linear-gradient(to bottom,@c,darken(@c,10%));
+    color:white;
+};
 
-    &:before{
-        // content: url(images/person.svg);
-    }
-    padding-left: 1em;
-    background-image: url(images/person.svg);
-    background-size: 1em;
-    background-repeat: no-repeat;
-}
+
 
 button.fast_link{
-    &:hover,&:active{
-        background-color: @ini_text_alt;
-        background-image: linear-gradient(to bottom, lighten(@ini_text_alt,30%),lighten(@ini_text_alt,10%)); 
-        
+
+    &.danger{
+        .buttonsFCE(@danger_color);
     }
+    &.warning{
+        .buttonsFCE(@warning_color);
+    }
+    &.success{
+        .buttonsFCE(@success_color);
+    }
+    &.info{
+        .buttonsFCE(@edit_color);
+    }   
     border: none;
     font-weight: bold;
-    width: 100%;
-    background-color: @ini_text_alt;
-    background-image: linear-gradient(to bottom, @ini_text_alt,darken(@ini_text_alt,20%));
-    color:white;
+    width: 100%;     
     padding: 1em;
-
-
+    border-radius:.5em;
+    cursor: pointer;
 }
+
+
+
+
+
+
