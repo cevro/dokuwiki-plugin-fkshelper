@@ -53,8 +53,13 @@ class syntax_plugin_fkshelper_fl extends DokuWiki_Syntax_Plugin {
             if(!$class){
                 $class = "default";
             }
+            
             $renderer->doc.='<div class="clearer"></div>';
-            $renderer->doc.='<a href="'.wl(cleanID($link)).'">';
+            if(preg_match('/^http[s]:\/\//',$link)){               
+                $renderer->doc.='<a href="'.htmlspecialchars($link).'">';
+            }else{
+                 $renderer->doc.='<a href="'.wl(cleanID($link)).'">';
+            }            
             $renderer->doc.='<button class="fast_link '.urlencode($class).'" id="'.urlencode($id).'">';
             $renderer->doc.=htmlspecialchars(trim($text));
             $renderer->doc.='</button>';
