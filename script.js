@@ -3,6 +3,13 @@
  * @returns {undefined}
  */
 
+jQuery.getScript("/lib/plugins/fkshelper/tablesort/jquery.tablesorter.min.js", function(){
+ 
+   jQuery("#content table").tablesorter(); 
+});
+ 
+
+
 
 jQuery(function () {
     var $ = jQuery;
@@ -94,6 +101,8 @@ jQuery(function () {
         return arrayPageScroll;
     }
     ;
+    
+    
   
 });
 

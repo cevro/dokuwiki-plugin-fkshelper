@@ -51,6 +51,43 @@ button.fast_link{
     cursor: pointer;
 }
 
+#dokuwiki__content table{
+    thead {
+        background-color: #1175da;
+        color: white;
+    }  
+
+    tr:nth-child(even) {
+        background-color: #ccc;
+    }
+    td,th{
+        padding: .25em;
+    }
+
+
+
+
+    thead tr .header {
+        background-image: url(tablesort/images/bg.gif);
+        background-repeat: no-repeat;
+        background-position: center right;
+        cursor: pointer;
+        padding-right: 1.5em;
+    }
+
+    
+    thead tr th.headerSortDown  {
+        background-image: url(tablesort/images/asc.gif);
+    }
+    thead tr th.headerSortUp {
+        background-image: url(tablesort/images/desc.gif);
+    }
+    
+
+
+}
+
+
 
 
 
