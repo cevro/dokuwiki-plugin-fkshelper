@@ -13,19 +13,11 @@ require_once __DIR__.'/form2.php';
 
 class helper_plugin_fkshelper extends DokuWiki_Plugin {
 
-    static $fields = array('name','org_id','person_id','contest_id','since','until',
-        'role',
-        'order',
-        'contribution',
-        'career',
-        'domain_alias',
-        'tex_signature',
-        'email');
-    public $downloader;
+   
    
 
     function __construct() {
-        $this->downloader = $this->loadHelper('fksdownloader');
+        //$this->downloader = $this->loadHelper('fksdownloader');
     }
 
     /**
@@ -48,7 +40,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
     }
 
     /**
-     * call form not class
+     * call from not class
      * @return void
      * @param null
      */
@@ -72,7 +64,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
      * @param int $lvl
      * 
      */
-    public static function ReturnMsg($text,$lvl) {
+    public static function returnMsg($text,$lvl) {
 
 
         ob_start();
@@ -301,25 +293,7 @@ class helper_plugin_fkshelper extends DokuWiki_Plugin {
         }
     }
 
-    public function getOrgData($id) {
-        $r = $this->downloader->downloadExport(1,'org.person',array('contest' => 'fykos','person_id' => $id),2);
-
-        $xml = new DOMDocument();
-        $xml->loadXML($r);
-        $data = array();
-        foreach (self::$fields as $field) {
-            foreach ($xml->getElementsByTagName($field) as $v) {
-                $data[$field] = $v->nodeValue;
-            }
-        }
-        return $data;
-    }
-    
-    public function scaleOrgPhoto($peron_id,$h) {
-
-        $link = ml('o-nas/orgs/'.$this->getConf('org_photo').':'.$peron_id.'.jpg',array('h' => $h),true,'&');
-        return $link;
-    }
+   
 
 }
 

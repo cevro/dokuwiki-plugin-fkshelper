@@ -3,10 +3,7 @@
  * @returns {undefined}
  */
 
-jQuery.getScript("/lib/plugins/fkshelper/tablesort/jquery.tablesorter.min.js", function(){
- 
-   jQuery("#content table").tablesorter(); 
-});
+
  
 
 
