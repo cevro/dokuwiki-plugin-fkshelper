@@ -12,7 +12,7 @@ if(!defined('DOKU_INC')){
 class syntax_plugin_fkshelper_small extends DokuWiki_Syntax_Plugin {
 
     public function getType() {
-        return 'substition';
+        return 'formatting';
     }
 
     public function getPType() {
@@ -20,11 +20,11 @@ class syntax_plugin_fkshelper_small extends DokuWiki_Syntax_Plugin {
     }
 
     public function getAllowedTypes() {
-        return array('formatting','substition','disabled');
+        return array('formatting');
     }
 
     public function getSort() {
-        return 226;
+        return 10;
     }
 
     public function connectTo($mode) {

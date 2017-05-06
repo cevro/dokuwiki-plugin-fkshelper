@@ -1,18 +1,11 @@
 <?php
 
-/**
- * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Michal Červeňák <miso@fykos.cz>
- */
-// must be run within Dokuwiki
-if(!defined('DOKU_INC')){
-    die();
-}
-
 class syntax_plugin_fkshelper_person extends DokuWiki_Syntax_Plugin {
-
+    /**
+     * @var helper_plugin_fkshelper
+     */
     public $helper;
-   
+
 
     function __construct() {
         $this->helper = $this->loadHelper('fkshelper');
@@ -27,7 +20,7 @@ class syntax_plugin_fkshelper_person extends DokuWiki_Syntax_Plugin {
     }
 
     public function getAllowedTypes() {
-        return array('formatting','substition','disabled');
+        return ['substition'];
     }
 
     public function getSort() {
@@ -35,47 +28,51 @@ class syntax_plugin_fkshelper_person extends DokuWiki_Syntax_Plugin {
     }
 
     public function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('{{person>.+?}}',$mode,'plugin_fkshelper_person');
+        $this->Lexer->addEntryPattern('<person\b.*?>(?=.*?</person>)', $mode, 'plugin_fkshelper_person');
+    }
+
+    public function postConnect() {
+        $this->Lexer->addExitPattern('</person>', 'plugin_fkshelper_person');
     }
 
 
-    public function handle($match,$state,$pos,Doku_Handler &$handler) {
-        
-        $id=trim(substr($match,9,-2));
-        
-        $data = $this->helper->getOrgData($id);
-      
-      
-       return($data);
+    public function handle($match, $state, $pos, Doku_Handler &$handler) {
+        switch ($state) {
+            case DOKU_LEXER_ENTER:
+                preg_match('|<person\s+id="(.+)">|', $match, $matches);
+                list(, $id) = $matches;
+                return [$state, ['id' => $id]];
+                break;
+            case DOKU_LEXER_UNMATCHED:
+                return [$state, $match];
+            default:
+                return [$state];
+        }
+
     }
 
-    /**
-     * Render xhtml output or metadata
-     *
-     * @param string         $mode      Renderer mode (supported modes: xhtml)
-     * @param Doku_Renderer  $renderer  The renderer
-     * @param array          $data      The data from the handler() function
-     * @return bool If rendering was successful.
-     */
-    public function render($mode,Doku_Renderer &$renderer,$data) {
-        //var_dump($data);
-         
-        if($mode == 'xhtml'){
-           $renderer->doc.='<span class="org" id="person'.$data['person_id'].'">'."\n".
-                   '<a href="'.wl(cleanID($this->getConf('org_page'))).'#'.$data['person_id'].'">'.$data['name'].'</a></span>';
-            
-            
-            
+    public function render($mode, Doku_Renderer &$renderer, $data) {
+
+        list($state, $payload) = $data;
+        if ($mode == 'xhtml') {
+            switch ($state) {
+                case DOKU_LEXER_ENTER:
+                    list(, $personInfo) = $data;
+                    $link = wl(':o-nas:sin-slavy');
+                    $imgSrc = ml(':orgs:person' . $personInfo['id'] . '.jpg', ['w' => 140]);
+                    $renderer->doc .= '<a href="' . $link . '" ><span class="person" data-src="' . $imgSrc . '">';
+                    break;
+                case DOKU_LEXER_UNMATCHED:
+                    $renderer->doc .= $renderer->_xmlEntities($payload);
+                    break;
+                case DOKU_LEXER_EXIT:
+                    $renderer->doc .= '</span></a>';
+                    break;
+            }
             return true;
-        }else if($mode == 'metadata'){
-           
-
+        } else if ($mode == 'metadata') {
             return true;
         }
         return false;
     }
-
-    
-
-
 }
