@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/fks/NavBar/BootstrapNavBar.php';
+
 class helper_plugin_fkshelper extends DokuWiki_Plugin {
     const POSITION_LEFT = 'left';
     const POSITION_RIGHT = 'right';
