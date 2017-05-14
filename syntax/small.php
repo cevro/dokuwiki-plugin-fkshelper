@@ -20,7 +20,7 @@ class syntax_plugin_fkshelper_small extends DokuWiki_Syntax_Plugin {
     }
 
     public function getAllowedTypes() {
-        return array('formatting');
+        return ['formatting'];
     }
 
     public function getSort() {
@@ -40,17 +40,15 @@ class syntax_plugin_fkshelper_small extends DokuWiki_Syntax_Plugin {
      */
     public function handle($match,$state) {
         if($state == DOKU_LEXER_UNMATCHED){
-            return array($state,$match);
+            return [$state, $match];
         }
 
-        return array($state);
+        return [$state];
     }
 
     public function render($mode,Doku_Renderer &$renderer,$data) {
         if($mode == 'xhtml'){
             list($state,$payload) = $data;
-
-
             switch ($state) {
                 case DOKU_LEXER_ENTER :
                     $renderer->doc .= '<small>';

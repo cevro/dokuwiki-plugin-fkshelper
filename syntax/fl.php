@@ -27,48 +27,50 @@ class syntax_plugin_fkshelper_fl extends DokuWiki_Syntax_Plugin {
         return 'block';
     }
 
-    public function getAllowedTypes() {
-        return [];
-    }
-
     public function getSort() {
         return 226;
     }
 
     public function connectTo($mode) {
-
         $this->Lexer->addSpecialPattern('{{fl.*?\>.+?\|.+?}}', $mode, 'plugin_fkshelper_fl');
+        $this->Lexer->addSpecialPattern('{{button.*?\>.+?\|.+?}}', $mode, 'plugin_fkshelper_fl');
     }
 
     public function handle($match, $state) {
-        preg_match('/{{\s*fl(.*)>(.*)\|(.*)}}/', $match, $matches);
-        list(, $attributes, $link, $text) = $matches;
+        if (preg_match('/{{\s*fl(.*)>(.*)\|(.*)}}/', $match, $matchesFL)) {
+            list(, $attributes, $link, $text) = $matchesFL;
+        } else {
+            preg_match('/{{\s*button(.*)>(.*)\|(.*)}}/', $match, $matchesButton);
+            list(, $attributes, $link, $text) = $matchesButton;
+        }
         $attributes = $this->helper->matchClassesNIDs($attributes);
-        return array($state, $link, $text, $attributes);
+        return [$state, $link, $text, $attributes];
     }
 
     public function render($mode, Doku_Renderer &$renderer, $data) {
         global $ID;
         if ($mode == 'xhtml') {
             list($state, $link, $text, $attributes) = $data;
-
-            if (preg_match('|^http[s]?://|', $link)) {
-                $renderer->doc .= '<a href="' . htmlspecialchars($link) . '">';
-            } else {
-                /** FUCK dokuwiki  */
-                if (preg_match('/([^#]*)(#.*)/', $link, $ms)) {
-                    list(, $id, $hash) = $ms;
-                    $id = $id ?: $ID;
-                    $renderer->doc .= '<a href="' . wl(cleanID($id)) . $hash . '">';
-                } else {
-                    $renderer->doc .= '<a href="' . wl(cleanID($link)) . '">';
-                }
+            switch ($state) {
+                case DOKU_LEXER_SPECIAL:
+                    $attributesString = ' class="fast_link ' . hsc($attributes['classes']) . '"';
+                    $attributesString .= ' id="' . hsc($attributes['id']) . '"';
+                    if (preg_match('|^http[s]?://|', $link)) {
+                        $renderer->doc .= '<a href="' . htmlspecialchars($link) . '"' . $attributesString . '>';
+                    } else {
+                        /** FUCK dokuwiki  */
+                        if (preg_match('/([^#]*)(#.*)/', $link, $ms)) {
+                            list(, $id, $hash) = $ms;
+                            $id = $id ?: $ID;
+                            $renderer->doc .= '<a href="' . wl(cleanID($id)) . $hash . '"' . $attributesString . '>';
+                        } else {
+                            $renderer->doc .= '<a href="' . wl(cleanID($link)) . '"' . $attributesString . '>';
+                        }
+                    }
+                    $renderer->doc .= htmlspecialchars(trim($text));
+                    $renderer->doc .= '</a>';
+                    return true;
             }
-            $renderer->doc .= '<span class="fast_link ' . hsc($attributes['classes']) . '" id="' . hsc($attributes['id']) . '">';
-            $renderer->doc .= htmlspecialchars(trim($text));
-            $renderer->doc .= '</span>';
-            $renderer->doc .= '</a>';
-            return true;
         }
         return false;
     }

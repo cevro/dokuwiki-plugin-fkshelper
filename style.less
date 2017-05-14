@@ -49,49 +49,23 @@
 }
 
 .image-show {
-  &, * {
-    box-sizing: border-box;
-  }
-  .title {
-    span.label {
-      padding: .25em;
-      font-weight: bold;
-      color: @ini_background !important;
-      margin: 0;
-    }
-    position: absolute;
-    background-color: @ini_text_alt;
-    bottom: 0;
-    height: inherit;
-    width: 100%;
-    font-size: 2.3em;
-  }
-  width: 100%;
-  &.ib{
+  &.ib {
     height: 240px;
     overflow: hidden;
   }
   padding: .5em;
-  transition-duration: 500ms;
-  &:hover {
-    transform: rotate(0deg) !important;
-    transition-duration: 500ms;
-  }
-  &.left {
-    float: left;
-  }
-  &.right {
-    float: right;
-  }
-  &.center {
-    margin-left: auto;
-    margin-right: auto;
-  }
+
   .image-container {
-    &:hover .title {
-      background-color: darken(@ini_text_alt, 20%);
+    .title {
+      padding: .5rem;
+      position: absolute;
+      bottom: 0;
+      height: inherit;
+      width: 100%;
+      color: @ini_background !important;
     }
-    .image {
+
+    .image, img {
       background-size: cover;
       background-position-y: 50%;
       height: 100%;
