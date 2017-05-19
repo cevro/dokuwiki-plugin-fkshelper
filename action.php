@@ -39,8 +39,8 @@ class action_plugin_fkshelper extends DokuWiki_Action_Plugin {
             return;
         }
         $date = time();
-        $maintenanceFrom = strtotime('2017-05-13T00:20:00');
-        $maintenanceTo = strtotime('2017-05-13T23:00:00');
+        $maintenanceFrom = strtotime('2017-05-20T00:00:00');
+        $maintenanceTo = strtotime('2017-05-20T18:00:00');
         if ($date > $maintenanceTo) {
             return;
         }
