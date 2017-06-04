@@ -11,8 +11,8 @@ class action_plugin_fkshelper extends DokuWiki_Action_Plugin {
     }
 
     public function register(Doku_Event_Handler $controller) {
-        //  $controller->register_hook('ACTION_ACT_PREPROCESS','BEFORE',$this,'antiSpam');
-        $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'maintenance');
+        // $controller->register_hook('ACTION_ACT_PREPROCESS','BEFORE',$this,'antiSpam');
+        // $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'maintenance');
     }
 
     public function antiSpam() {
@@ -40,7 +40,7 @@ class action_plugin_fkshelper extends DokuWiki_Action_Plugin {
         }
         $date = time();
         $maintenanceFrom = strtotime('2017-05-20T00:00:00');
-        $maintenanceTo = strtotime('2017-05-20T18:00:00');
+        $maintenanceTo = strtotime('2017-05-19T18:00:00');
         if ($date > $maintenanceTo) {
             return;
         }
@@ -48,7 +48,7 @@ class action_plugin_fkshelper extends DokuWiki_Action_Plugin {
             return;
         }
         // TODO jazykové korektury
-        require_once __DIR__.'/maintenance.html';
+        require_once __DIR__ . '/maintenance.html';
         die();
     }
 }

@@ -1,48 +1,8 @@
-@danger_color: #da1111;
-@warning_color: #da7511;
-@success_color: #11da75;
-@edit_color: #1175da;
-
-.tableFCE(@c,@b1,@b2) when (iscolor(@c)) and (iscolor(@b1))and (iscolor(@b2)){
-  thead {
-    background-color: @c;
-    color: white;
-  }
-  tbody {
-    tr {
-      &:hover, &:active {
-        background-color: darken(@b1, 10%);
-      }
-      background-color: @b1;
-    }
-    tr:nth-child(even) {
-      &:hover, &:active {
-        background-color: darken(@b2, 10%);
-      }
-      background-color: @b2;
-
-    }
-  }
-}
-
 #content table {
-  .tableFCE(#1175da, #fff, #dadada);
-  td, th {
-    padding: .25em;
-  }
-
-  thead tr .header {
-    background-image: url(tablesort/images/bg.gif);
-    background-repeat: no-repeat;
-    background-position: center right;
-    cursor: pointer;
-    padding-right: 1.5em;
-  }
-
-  thead tr th.headerSortDown {
+  thead th.headerSortDown {
     background-image: url(tablesort/images/asc.gif);
   }
-  thead tr th.headerSortUp {
+  thead th.headerSortUp {
     background-image: url(tablesort/images/desc.gif);
   }
 
@@ -56,23 +16,26 @@
   padding: .5em;
 
   .image-container {
-    .title {
-      padding: .5rem;
+    a:hover .caption {
+      opacity: 1;
+    }
+    .caption {
+      .icon {
+        font-size: 7rem;
+        display: block;
+      }
+      opacity: 0;
       position: absolute;
-      bottom: 0;
-      height: inherit;
-      width: 100%;
-      color: @ini_background !important;
+      top: 0;
+      background-color: rgba(0, 0, 0, .5);
+      color: white;
     }
 
-    .image, img {
+    div.image {
       background-size: cover;
       background-position-y: 50%;
-      height: 100%;
-      width: 100%;
+
     }
-    width: 100%;
-    height: 100%;
     position: relative;
   }
 }

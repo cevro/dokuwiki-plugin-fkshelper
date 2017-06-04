@@ -47,6 +47,7 @@ class syntax_plugin_fkshelper_person extends DokuWiki_Syntax_Plugin {
             switch ($state) {
                 case DOKU_LEXER_ENTER:
                     list(, $personInfo) = $data;
+                    // TODO linky do konfigurácie
                     $link = wl(':o-nas:sin-slavy');
                     $imgSrc = ml(':orgs:person' . $personInfo['id'] . '.jpg', ['w' => 140]);
                     $renderer->doc .= '<a href="' . $link . '" ><span class="person" data-src="' . $imgSrc . '">';

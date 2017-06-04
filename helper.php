@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . '/fks/NavBar/BootstrapNavBar.php';
-
 class helper_plugin_fkshelper extends DokuWiki_Plugin {
 
     public function matchClassesNIDs($attributes) {

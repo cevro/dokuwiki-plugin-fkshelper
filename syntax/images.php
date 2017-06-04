@@ -55,7 +55,6 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
                         'class' => 'image-show image-link ' . $type . ' ' . $attributes['classes'],
                         'id' => $attributes['id']
                     ];
-                    $imgSize = 360;
 
                     if ($imageData['image'] == null) {
                         $renderer->nocache();
@@ -68,7 +67,7 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
                             $imageData['label'],
                             $imageData['href'],
                             $type == 'im',
-                            $imgSize,
+                            null,
                             $param);
                     }
                     return true;
@@ -92,13 +91,14 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
         return ['image' => $image, 'href' => $href, 'label' => $label];
     }
 
-    private function printImageDiv(Doku_Renderer $renderer, $imageID, $label, $href, $full = true, $imgSize = 420, $param = []) {
+    private function printImageDiv(Doku_Renderer $renderer, $imageID, $label, $href, $full = true, $imgSize = null, $param = []) {
+
         $renderer->doc .= '<div ' . buildAttributes($param) . '>';
-        $renderer->doc .= '<div class="image-container">';
+        $renderer->doc .= '<figure class="image-container w-100 h-100">';
         $renderer->doc .= $href ? ('<a href="' .
             (preg_match('|^http[s]?://|', trim($href)) ? htmlspecialchars($href) : wl(cleanID($href))) . '">') : '';
-        $renderer->doc .= $full ? $this->printFullImage($imageID, $imgSize) : $this->printBackgroundImage($imageID,
-            $imgSize);
+
+        $renderer->doc .= $this->printImage($imageID, $imgSize, $full);
         $renderer->doc .= $this->printLabel($label);
         $renderer->doc .= $href ? '</a>' : '';
         $renderer->doc .= '</div>';
@@ -106,16 +106,39 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
     }
 
     private function printLabel($label) {
-        return $label ? '<div class="title display-4"><span class="icon"></span><strong>' . htmlspecialchars($label) .
-            '</strong></div>' : '';
+        if (!$label) {
+            return '';
+        }
+        $html = '<figcaption class="caption d-flex align-items-center justify-content-center w-100 h-100">';
+        $html .= '<div class="text-center">';
+        $icon = false;
+        if (preg_match('|icon\=\"(.*)\"|', $label, $icons)) {
+            $label = preg_replace('|icon\=\"(.*)\"|', '', $label);
+            list (, $icon) = $icons;
+        }
+        if ($icon) {
+            $html .= '<span class="icon ' . $icon . '"></span>';
+        }
+        $html .= '<strong class="h4">' . htmlspecialchars($label) . '</strong></div>';
+        $html .= '</div>';
+        return $html;
     }
 
-    private function printBackgroundImage($image, $size) {
-        return '<div class="image" style="background-image: url(\'' . ml($image, ['w' => $size]) . '\')"></div>';
+    private function printImage($imageID, $imgSize = null, $full = true) {
+        $size = @getimagesize(mediaFN($imageID));
+        if ($size && $size[0] > 1600) {
+            $imgSize = 1600;
+        }
+        $src = ml($imageID, $imgSize ? ['w' => $imgSize] : null);
+        return $full ? $this->printFullImage($src) : $this->printBackgroundImage($src);
     }
 
-    private function printFullImage($image, $size) {
-        return '<img src="' . ml($image, ['w' => $size]) . '"/>';
+    private function printBackgroundImage($src) {
+        return '<div class="image w-100 h-100" style="background-image: url(\'' . $src . '\')"></div>';
+    }
+
+    private function printFullImage($src) {
+        return '<img class="image w-100 h-100" src="' . $src . '"/>';
     }
 
     private function findPosition($match) {
