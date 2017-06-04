@@ -101,7 +101,7 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
         $renderer->doc .= $this->printImage($imageID, $imgSize, $full);
         $renderer->doc .= $this->printLabel($label);
         $renderer->doc .= $href ? '</a>' : '';
-        $renderer->doc .= '</div>';
+        $renderer->doc .= '</figure>';
         $renderer->doc .= '</div>';
     }
 
@@ -121,6 +121,7 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
         }
         $html .= '<strong class="h4">' . htmlspecialchars($label) . '</strong></div>';
         $html .= '</figcaption>';
+        var_dump($html);
         return $html;
     }
 
