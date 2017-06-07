@@ -121,7 +121,7 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
         }
         $html .= '<strong class="h4">' . htmlspecialchars($label) . '</strong></div>';
         $html .= '</figcaption>';
-        var_dump($html);
+
         return $html;
     }
 

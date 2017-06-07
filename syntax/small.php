@@ -4,10 +4,6 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Michal Červeňák <miso@fykos.cz>
  */
-// must be run within Dokuwiki
-if(!defined('DOKU_INC')){
-    die();
-}
 
 class syntax_plugin_fkshelper_small extends DokuWiki_Syntax_Plugin {
 
