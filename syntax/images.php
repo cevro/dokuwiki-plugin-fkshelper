@@ -44,7 +44,7 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
         return [$state, [$data, $attributes, $type]];
     }
 
-    public function render($mode, Doku_Renderer &$renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data) {
         if ($mode == 'xhtml') {
             /** @var Doku_Renderer_xhtml $renderer */
             list($state, $matches) = $data;
