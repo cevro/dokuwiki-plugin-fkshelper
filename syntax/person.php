@@ -26,7 +26,7 @@ class syntax_plugin_fkshelper_person extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addExitPattern('</person>', 'plugin_fkshelper_person');
     }
 
-    public function handle($match, $state, $pos, Doku_Handler &$handler) {
+    public function handle($match, $state, $pos, Doku_Handler $handler) {
         switch ($state) {
             case DOKU_LEXER_ENTER:
                 preg_match('|<person\s+id="(.+)">|', $match, $matches);
@@ -40,14 +40,14 @@ class syntax_plugin_fkshelper_person extends DokuWiki_Syntax_Plugin {
         }
     }
 
-    public function render($mode, Doku_Renderer &$renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data) {
 
         list($state, $payload) = $data;
         if ($mode == 'xhtml') {
             switch ($state) {
                 case DOKU_LEXER_ENTER:
                     list(, $personInfo) = $data;
-                    $link = wl($this->getConf('person-page-link'), null, true);
+                    $link = wl($this->getConf('person-page-link'), null, true) . '#' . $personInfo['id'];
                     $imgSrc = ml(str_replace('@id@', $personInfo['id'], $this->getConf('person-image-src')),
                         ['w' => 140]);
                     $renderer->doc .= '<a href="' . $link . '" ><span class="person" data-src="' . $imgSrc . '">';
