@@ -1,6 +1,8 @@
 /* DOKUWIKI:include_once tablesort/jquery.tablesorter.min.js*/
 /* DOKUWIKI:include_once tablesort/jquery.tablesorter.staticrow.min.js*/
 ;
+/* DOKUWIKI:include_once dwmediaselector.js*/
+
 jQuery(function () {
     var $ = jQuery;
     // $('.content table').tablesorter();
