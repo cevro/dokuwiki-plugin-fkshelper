@@ -13,7 +13,7 @@ DWMediaSelector = new (function () {
 
     /**
      * Opens media manager window
-     * @param {Function} callback (mediaID) called after the media is selected
+     * @param {Function|null} callback (mediaID) called after the media is selected
      * @param path preferred path id
      * @param {Boolean} preferBlankWindow
      */
@@ -34,19 +34,21 @@ DWMediaSelector = new (function () {
         }
 
         // Modify the script
-        mediaManagerWindow.addEventListener("load", () => {
-            const mediaContent = mediaManagerWindow.document.getElementById('media__content');
-            if (mediaContent) {
-                jQuery(mediaContent).on('click', 'a.select', function () { // Add new function to scope for bind select media
-                    callback(this.getAttribute('id').substr(2)); // Extract data (official method)
-                    mediaManagerWindow.close(); // Close window
-                });
-            }
+        if (callback !== null) {
+            mediaManagerWindow.addEventListener("load", () => {
+                const mediaContent = mediaManagerWindow.document.getElementById('media__content');
+                if (mediaContent) {
+                    jQuery(mediaContent).on('click', 'a.select', function () { // Add new function to scope for bind select media
+                        callback(this.getAttribute('id').substr(2)); // Extract data (official method)
+                        mediaManagerWindow.close(); // Close window
+                    });
+                }
 
-            mediaManagerWindow.opener = null; // You have no parents - some options will be disabled
-            mediaManagerWindow.document.getElementById('media__opts').innerHTML = ''; // Remove options
-            mediaManagerWindow.dw_mediamanager.attachoptions(); // Update options
-        });
+                mediaManagerWindow.opener = null; // You have no parents - some options will be disabled
+                mediaManagerWindow.document.getElementById('media__opts').innerHTML = ''; // Remove options
+                mediaManagerWindow.dw_mediamanager.attachoptions(); // Update options
+            });
+        }
 
         return true;
     }
