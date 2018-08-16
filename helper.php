@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/inc/Form/DateTimeInputElement.php';
+
 class helper_plugin_fkshelper extends DokuWiki_Plugin {
 
     public function matchClassesNIDs($attributes) {
