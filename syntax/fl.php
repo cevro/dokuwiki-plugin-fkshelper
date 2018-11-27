@@ -34,28 +34,47 @@ class syntax_plugin_fkshelper_fl extends DokuWiki_Syntax_Plugin {
     public function connectTo($mode) {
         $this->Lexer->addSpecialPattern('{{fl.*?\>.+?\|.+?}}', $mode, 'plugin_fkshelper_fl');
         $this->Lexer->addSpecialPattern('{{button.*?\>.+?\|.+?}}', $mode, 'plugin_fkshelper_fl');
+        $this->Lexer->addSpecialPattern('{{media-button.*?\>.+?\|.+?}}', $mode, 'plugin_fkshelper_fl');
     }
 
     public function handle($match, $state) {
-        if (preg_match('/{{\s*fl(.*)>(.*)\|(.*)}}/', $match, $matchesFL)) {
-            list(, $attributes, $link, $text) = $matchesFL;
+        preg_match('/{{\s*(media-)?(button|fl)(.*)>(.*)\|(.*)}}/', $match, $matchesButton);
+        list(, $is_media, $button_type, $attributes, $link, $text) = $matchesButton;
+        $type = 'link';
+
+        /* Test if media */
+        if ($is_media) {
+            /* If the query contains question mark test if the page exists */
+            if (substr($link, -1) === '?' && (!media_ispublic($link) || !file_exists(mediaFN($link)))) {
+                return false;
+            }
+
+            $type = 'ml';
         } else {
-            preg_match('/{{\s*button(.*)>(.*)\|(.*)}}/', $match, $matchesButton);
-            list(, $attributes, $link, $text) = $matchesButton;
+            /* If the query contains question mark test if the page exists */
+            if (substr($link, -1) === '?' && !page_exists($link)) {
+                return false;
+            }
         }
+
         $attributes = $this->helper->matchClassesNIDs($attributes);
-        return [$state, $link, $text, $attributes];
+        return [$state, $link, $text, $attributes, $type];
     }
 
     public function render($mode, Doku_Renderer &$renderer, $data) {
         global $ID;
+        if (!$data) {
+            return false;
+        }
         if ($mode == 'xhtml') {
-            list($state, $link, $text, $attributes) = $data;
+            list($state, $link, $text, $attributes, $type) = $data;
             switch ($state) {
                 case DOKU_LEXER_SPECIAL:
                     $attributesString = ' class="fast_link ' . hsc($attributes['classes']) . '"';
                     $attributesString .= ' id="' . hsc($attributes['id']) . '"';
-                    if (preg_match('|^http[s]?://|', $link)) {
+                    if ($type === 'ml') {
+                        $renderer->doc .= '<a href="' . ml($link) . '"' . $attributesString . '>';
+                    } else if (preg_match('|^http[s]?://|', $link)) {
                         $renderer->doc .= '<a href="' . htmlspecialchars($link) . '"' . $attributesString . '>';
                     } else {
                         /** FUCK dokuwiki  */
