@@ -1,36 +1,38 @@
 <?php
 
-class syntax_plugin_fkshelper_person extends DokuWiki_Syntax_Plugin {
+use dokuwiki\Extension\SyntaxPlugin;
 
-    public function getType() {
+class syntax_plugin_fkshelper_person extends SyntaxPlugin {
+
+    public function getType(): string {
         return 'substition';
     }
 
-    public function getPType() {
+    public function getPType(): string {
         return 'normal';
     }
 
-    public function getAllowedTypes() {
+    public function getAllowedTypes(): array {
         return ['substition'];
     }
 
-    public function getSort() {
+    public function getSort(): int {
         return 226;
     }
 
-    public function connectTo($mode) {
+    public function connectTo($mode): void {
         $this->Lexer->addEntryPattern('<person\b.*?>(?=.*?</person>)', $mode, 'plugin_fkshelper_person');
     }
 
-    public function postConnect() {
+    public function postConnect(): void {
         $this->Lexer->addExitPattern('</person>', 'plugin_fkshelper_person');
     }
 
-    public function handle($match, $state, $pos, Doku_Handler $handler) {
+    public function handle($match, $state, $pos, Doku_Handler $handler): array {
         switch ($state) {
             case DOKU_LEXER_ENTER:
                 preg_match('|<person\s+id="(.+)">|', $match, $matches);
-                list(, $id) = $matches;
+                [, $id] = $matches;
                 return [$state, ['id' => $id]];
                 break;
             case DOKU_LEXER_UNMATCHED:
@@ -40,13 +42,13 @@ class syntax_plugin_fkshelper_person extends DokuWiki_Syntax_Plugin {
         }
     }
 
-    public function render($mode, Doku_Renderer $renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data): bool {
 
-        list($state, $payload) = $data;
+        [$state, $payload] = $data;
         if ($mode == 'xhtml') {
             switch ($state) {
                 case DOKU_LEXER_ENTER:
-                    list(, $personInfo) = $data;
+                    [, $personInfo] = $data;
                     $link = wl($this->getConf('person-page-link'), null, true) . '#' . $personInfo['id'];
                     $imgSrc = ml(str_replace('@id@', $personInfo['id'], $this->getConf('person-image-src')),
                         ['w' => 140]);
@@ -60,7 +62,7 @@ class syntax_plugin_fkshelper_person extends DokuWiki_Syntax_Plugin {
                     break;
             }
             return true;
-        } else if ($mode == 'metadata') {
+        } elseif ($mode == 'metadata') {
             return true;
         }
         return false;

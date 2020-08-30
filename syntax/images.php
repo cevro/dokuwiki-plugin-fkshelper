@@ -1,59 +1,51 @@
 <?php
 
+use dokuwiki\Extension\SyntaxPlugin;
+
 require_once(DOKU_INC . 'inc/search.php');
 require_once(DOKU_INC . 'inc/JpegMeta.php');
 
-class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
+class syntax_plugin_fkshelper_images extends SyntaxPlugin {
     const POSITION_LEFT = 'left';
     const POSITION_RIGHT = 'right';
     const POSITION_CENTER = 'center';
 
-    /**
-     *
-     * @var helper_plugin_fkshelper
-     */
-    private $helper;
-
-    public function __construct() {
-        $this->helper = $this->loadHelper('fkshelper');
-    }
-
-    public function getType() {
+    public function getType(): string {
         return 'substition';
     }
 
-    public function getPType() {
+    public function getPType(): string {
         return 'block';
     }
 
-    public function getSort() {
+    public function getSort(): int {
         return 227;
     }
 
-    public function connectTo($mode) {
+    public function connectTo($mode): void {
         $this->Lexer->addSpecialPattern('{{im.*?\>.+?\|.*?\|.*?}}', $mode, 'plugin_fkshelper_images');
         $this->Lexer->addSpecialPattern('{{ib.*?\>.+?\|.*?\|.*?}}', $mode, 'plugin_fkshelper_images');
     }
 
-    public function handle($match, $state) {
+    public function handle($match, $state, $pos, \Doku_Handler $handler): array {
         $matches = [];
         preg_match('/{{([a-z]+)(.*)>(.+?)}}/', $match, $matches);
-        list(, $type, $attributes, $p) = $matches;
-        $attributes = $this->helper->matchClassesNIDs($attributes);
+        [, $type, $attributes, $p] = $matches;
+        $attributes = self::prepareSelectors($attributes);
         $data = $this->parseImageData($p);
         return [$state, [$data, $attributes, $type]];
     }
 
-    public function render($mode, Doku_Renderer $renderer, $data) {
+    public function render($mode, \Doku_Renderer $renderer, $data): bool {
         if ($mode == 'xhtml') {
-            /** @var Doku_Renderer_xhtml $renderer */
-            list($state, $matches) = $data;
+            /** @var \Doku_Renderer_xhtml $renderer */
+            [$state, $matches] = $data;
             switch ($state) {
                 case DOKU_LEXER_SPECIAL:
-                    list($imageData, $attributes, $type) = $matches;
+                    [$imageData, $attributes, $type] = $matches;
                     $param = [
                         'class' => 'image-show image-link ' . $type . ' ' . $attributes['classes'],
-                        'id' => $attributes['id']
+                        'id' => $attributes['id'],
                     ];
 
                     if ($imageData['image'] == null) {
@@ -67,7 +59,6 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
                             $imageData['label'],
                             $imageData['href'],
                             $type == 'im',
-                            null,
                             $param);
                     }
                     return true;
@@ -76,9 +67,9 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
         return false;
     }
 
-    private function parseImageData($m) {
+    private function parseImageData(string $match): array {
         global $conf;
-        list($gallery, $href, $label) = preg_split('~(?<!\\\)' . preg_quote('|', '~') . '~', $m);
+        [$gallery, $href, $label] = preg_split('~(?<!\\\)' . preg_quote('|', '~') . '~', $match);
         $image = ['id' => pathID($gallery)];
 
         if (!file_exists(mediaFN($gallery)) || is_dir(mediaFN($gallery))) {
@@ -91,21 +82,21 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
         return ['image' => $image, 'href' => $href, 'label' => $label];
     }
 
-    private function printImageDiv(Doku_Renderer $renderer, $imageID, $label, $href, $full = true, $imgSize = null, $param = []) {
+    private function printImageDiv(Doku_Renderer $renderer, ?string $imageId, ?string $label, ?string $href, bool $full = true, array $param = []) {
 
         $renderer->doc .= '<div ' . buildAttributes($param) . '>';
         $renderer->doc .= '<figure class="image-container w-100 h-100">';
         $renderer->doc .= $href ? ('<a href="' .
             (preg_match('|^http[s]?://|', trim($href)) ? htmlspecialchars($href) : wl(cleanID($href))) . '">') : '';
 
-        $renderer->doc .= $this->printImage($imageID, $imgSize, $full);
+        $renderer->doc .= $this->printImage($imageId, $full);
         $renderer->doc .= $this->printLabel($label);
         $renderer->doc .= $href ? '</a>' : '';
         $renderer->doc .= '</figure>';
         $renderer->doc .= '</div>';
     }
 
-    private function printLabel($label) {
+    private function printLabel(?string $label): string {
         if (!$label) {
             return '';
         }
@@ -114,7 +105,7 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
         $icon = false;
         if (preg_match('|icon\=\"(.*)\"|', $label, $icons)) {
             $label = preg_replace('|icon\=\"(.*)\"|', '', $label);
-            list (, $icon) = $icons;
+            [, $icon] = $icons;
         }
         if ($icon) {
             $html .= '<span class="icon ' . $icon . '"></span>';
@@ -125,24 +116,24 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
         return $html;
     }
 
-    private function printImage($imageID, $imgSize = null, $full = true) {
-        $size = @getimagesize(mediaFN($imageID));
+    private function printImage(string $imageId, bool $full = true): string {
+        $size = @getimagesize(mediaFN($imageId));
         if ($size && $size[0] > 1600) {
             $imgSize = 1600;
         }
-        $src = ml($imageID, $imgSize ? ['w' => $imgSize] : null);
+        $src = ml($imageId, isset($imgSize) ? ['w' => $imgSize] : null);
         return $full ? $this->printFullImage($src) : $this->printBackgroundImage($src);
     }
 
-    private function printBackgroundImage($src) {
+    private function printBackgroundImage(string $src): string {
         return '<div class="image w-100 h-100" style="background-image: url(\'' . $src . '\')"></div>';
     }
 
-    private function printFullImage($src) {
+    private function printFullImage(string $src): string {
         return '<img class="image w-100 h-100" src="' . $src . '"/>';
     }
 
-    private function findPosition($match) {
+    private function findPosition(string $match): string {
 
         if (preg_match('/\s+(.+)\s+/', $match)) {
             return self::POSITION_CENTER;
@@ -153,5 +144,14 @@ class syntax_plugin_fkshelper_images extends DokuWiki_Syntax_Plugin {
         } else {
             return self::POSITION_CENTER;
         }
+    }
+
+    public static function prepareSelectors(string $attributes): array {
+        // match classes
+        preg_match_all('/\.([a-zA-z0-9-_]*)/', $attributes, $classes);
+        // match ID
+        preg_match('/\#([a-zA-z0-9-_]*)/', $attributes, $id);
+
+        return ['classes' => implode(" ", $classes[1]), 'id' => $id[1]];
     }
 }

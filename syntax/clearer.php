@@ -1,34 +1,36 @@
 <?php
 
-class syntax_plugin_fkshelper_clearer extends DokuWiki_Syntax_Plugin {
+use dokuwiki\Extension\SyntaxPlugin;
 
-    public function getType() {
+class syntax_plugin_fkshelper_clearer extends SyntaxPlugin {
+
+    public function getType(): string {
         return 'formatting';
     }
 
-    public function getPType() {
+    public function getPType(): string {
         return 'normal';
     }
 
-    public function getAllowedTypes() {
+    public function getAllowedTypes(): array {
         return [];
     }
 
-    public function getSort() {
+    public function getSort(): int {
         return 1000;
     }
 
-    public function connectTo($mode) {
+    public function connectTo($mode): void {
         $this->Lexer->addSpecialPattern('~~clear~~', $mode, 'plugin_fkshelper_clearer');
     }
 
-    public function handle($match, $state) {
+    public function handle($match, $state, $pos, Doku_Handler $handler): array {
         return [$state];
     }
 
-    public function render($mode, Doku_Renderer &$renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data): bool {
         if ($mode == 'xhtml') {
-            list($state) = $data;
+            [$state] = $data;
             switch ($state) {
                 case DOKU_LEXER_SPECIAL :
                     $renderer->doc .= '<div style="clear:both"></div>';

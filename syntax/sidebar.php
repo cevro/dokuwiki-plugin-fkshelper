@@ -1,37 +1,39 @@
 <?php
 
-class syntax_plugin_fkshelper_sidebar extends DokuWiki_Syntax_Plugin {
+use dokuwiki\Extension\SyntaxPlugin;
 
-    public function getType() {
+class syntax_plugin_fkshelper_sidebar extends SyntaxPlugin {
+
+    public function getType(): string {
         return 'formatting';
     }
 
-    public function getPType() {
+    public function getPType(): string {
         return 'normal';
     }
 
-    public function getAllowedTypes() {
+    public function getAllowedTypes(): array {
         return [];
     }
 
-    public function getSort() {
+    public function getSort(): int {
         return 1000;
     }
 
-    public function connectTo($mode) {
+    public function connectTo($mode): void {
         $this->Lexer->addSpecialPattern('~~SIDEBAR\|.*?~~', $mode, 'plugin_fkshelper_sidebar');
     }
 
-    public function handle($match, $state, $pos, \Doku_Handler $dokuHandler) {
+    public function handle($match, $state, $pos, \Doku_Handler $dokuHandler): array {
         preg_match('/~~SIDEBAR\|(.*?)~~/', $match, $matches);
-        list (, $pageId) = $matches;
+        [, $pageId] = $matches;
         $pageId = trim($pageId);
         return [$state, $pageId];
     }
 
-    public function render($mode, Doku_Renderer $renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data): bool {
         if ($mode === 'metadata') {
-            list(, $pageId) = $data;
+            [, $pageId] = $data;
             $renderer->meta['sidebar'] = $pageId;
             return true;
         } else {

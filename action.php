@@ -1,21 +1,15 @@
 <?php
 
-class action_plugin_fkshelper extends DokuWiki_Action_Plugin {
-    /**
-     * @var helper_plugin_fkshelper
-     */
-    private $helper;
+use dokuwiki\Extension\ActionPlugin;
 
-    public function __construct() {
-        $this->helper = $this->loadHelper('fkshelper');
-    }
+class action_plugin_fkshelper extends ActionPlugin {
 
-    public function register(Doku_Event_Handler $controller) {
+    public function register(Doku_Event_Handler $controller): void {
         // $controller->register_hook('ACTION_ACT_PREPROCESS','BEFORE',$this,'antiSpam');
         // $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'maintenance');
     }
 
-    public function antiSpam() {
+    public function antiSpam(): void {
         global $INPUT;
         $html_out = $this->getConf('deny_html_out');
 
@@ -29,7 +23,7 @@ class action_plugin_fkshelper extends DokuWiki_Action_Plugin {
         }
     }
 
-    public function maintenance() {
+    public function maintenance(): void {
         global $INPUT;
         if ($_COOKIE['test-user'] == 'fykosak') {
             return;
