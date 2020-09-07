@@ -2,6 +2,10 @@
 
 use dokuwiki\Extension\SyntaxPlugin;
 
+/**
+ * Class syntax_plugin_fkshelper_person
+ * @author Michal Červeňák <miso@fykos.cz>
+ */
 class syntax_plugin_fkshelper_person extends SyntaxPlugin {
 
     public function getType(): string {
@@ -34,7 +38,6 @@ class syntax_plugin_fkshelper_person extends SyntaxPlugin {
                 preg_match('|<person\s+id="(.+)">|', $match, $matches);
                 [, $id] = $matches;
                 return [$state, ['id' => $id]];
-                break;
             case DOKU_LEXER_UNMATCHED:
                 return [$state, $match];
             default:

@@ -2,6 +2,10 @@
 
 use dokuwiki\Extension\SyntaxPlugin;
 
+/**
+ * Class syntax_plugin_fkshelper_clearer
+ * @author Michal Červeňák <miso@fykos.cz>
+ */
 class syntax_plugin_fkshelper_clearer extends SyntaxPlugin {
 
     public function getType(): string {

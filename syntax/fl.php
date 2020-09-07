@@ -28,11 +28,11 @@ class syntax_plugin_fkshelper_fl extends SyntaxPlugin {
 
     public function handle($match, $state, $pos, Doku_Handler $handler): array {
         preg_match('/{{\s*(media-)?(button|fl)(.*)>(.*)\|(.*)}}/', $match, $matchesButton);
-        [, $is_media, $button_type, $attributes, $link, $text] = $matchesButton;
+        [, $isMedia, $buttonType, $attributes, $link, $text] = $matchesButton;
         $type = 'link';
 
         /* Test if media */
-        if ($is_media) {
+        if ($isMedia) {
             /* If the query contains question mark test if the page exists */
             if (substr($link, -1) === '?' && (!media_ispublic($link) || !file_exists(mediaFN($link)))) {
                 return [$state];
