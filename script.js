@@ -4,33 +4,29 @@
 /* DOKUWIKI:include_once dwmediaselector.js*/
 
 jQuery(function () {
-    var $ = jQuery;
     // $('.content table').tablesorter();
-    $('.content table').tablesorter({
+    jQuery('.content table').tablesorter({
             widgets: ['staticRow'],
             sortInitialOrder: 'desc'
         }
     );
+    document.querySelectorAll('.person').forEach((el) => {
+        el.addEventListener('mouseenter', (event) => {
+            const src = el.getAttribute('data-src');
+            const tooltip = document.createElement('div');
+            tooltip.style.position = 'absolute';
+            tooltip.style.top = (event.pageY + 5) + 'px';
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.width = '70px';
 
-    $('.person').on('mouseenter', function (event) {
-        "use strict";
-        const src = $(this).attr('data-src');
-        const $tooltip = $(document.createElement('div'));
-        var display = true;
-        $('<img/>').attr({src: src}).load(function () {
-            if(display){
-                $tooltip.css({
-                    position: 'absolute',
-                    top: event.pageY + 5,
-                    left: event.pageX + 10,
-                    width: '70px'
-                }).append(this);
-                $('html').append($tooltip);
-            }
-        });
-        $(this).on('mouseleave', function () {
-            display = false;
-            $tooltip.remove();
+            const img = document.createElement('img');
+            img.setAttribute('src', src);
+            tooltip.appendChild(img);
+
+            document.querySelector('html').appendChild(tooltip);
+            el.addEventListener('mouseleave', () => {
+                tooltip.remove();
+            });
         });
     });
 });

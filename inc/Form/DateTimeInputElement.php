@@ -1,16 +1,13 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: miso
- * Date: 5.11.2017
- * Time: 20:49
- */
 
-namespace PluginFKSHelper\Form;
-
+namespace FYKOS\dokuwiki\Extension\PluginFKSHelper\Form;
 
 use dokuwiki\Form\InputElement;
 
+/**
+ * Class DateTimeInputElement
+ * @author Michal Červeňák <miso@fykos.cz>
+ */
 class DateTimeInputElement extends InputElement {
 
     public function __construct($name, $label = '') {

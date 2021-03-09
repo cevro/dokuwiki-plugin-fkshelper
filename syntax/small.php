@@ -36,7 +36,6 @@ class syntax_plugin_fkshelper_small extends SyntaxPlugin {
         if ($state == DOKU_LEXER_UNMATCHED) {
             return [$state, $match];
         }
-
         return [$state];
     }
 
@@ -57,10 +56,8 @@ class syntax_plugin_fkshelper_small extends SyntaxPlugin {
                     $renderer->doc .= '</small>';
                     break;
             }
-
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }

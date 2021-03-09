@@ -5,6 +5,10 @@ use dokuwiki\Extension\SyntaxPlugin;
 require_once(DOKU_INC . 'inc/search.php');
 require_once(DOKU_INC . 'inc/JpegMeta.php');
 
+/**
+ * Class syntax_plugin_fkshelper_images
+ * @author Michal Červeňák <miso@fykos.cz>
+ */
 class syntax_plugin_fkshelper_images extends SyntaxPlugin {
     const POSITION_LEFT = 'left';
     const POSITION_RIGHT = 'right';
@@ -131,19 +135,6 @@ class syntax_plugin_fkshelper_images extends SyntaxPlugin {
 
     private function printFullImage(string $src): string {
         return '<img class="image w-100 h-100" src="' . $src . '"/>';
-    }
-
-    private function findPosition(string $match): string {
-
-        if (preg_match('/\s+(.+)\s+/', $match)) {
-            return self::POSITION_CENTER;
-        } elseif (preg_match('/(.+)\s+/', $match)) {
-            return self::POSITION_LEFT;
-        } elseif (preg_match('/\s+(.+)/', $match)) {
-            return self::POSITION_RIGHT;
-        } else {
-            return self::POSITION_CENTER;
-        }
     }
 
     public static function prepareSelectors(string $attributes): array {
