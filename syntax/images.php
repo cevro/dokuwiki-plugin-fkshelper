@@ -78,7 +78,7 @@ class syntax_plugin_fkshelper_images extends SyntaxPlugin {
 
         if (!file_exists(mediaFN($gallery)) || is_dir(mediaFN($gallery))) {
             search($files, $conf['mediadir'], 'search_media', [], utf8_encodeFN(str_replace(':', '/', trim($gallery))));
-            if (count($files)) {
+            if (is_countable($files) && count($files)) {
                 $image = $files[array_rand($files)];
                 unset($files);
             }
